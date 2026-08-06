@@ -1,0 +1,36 @@
+bin/
+obj/
+.vs/
+*.user
+*.log
+output/
+logs/
+
+# Certificados — nunca versionar
+*.pfx
+*.p12
+*.crt
+*.key
+
+# DLL nativa — baixar separado
+**/ACBrLibBoleto*.dll
+**/libacbr*.so
+
+# INI temporários gerados em runtime
+acbr_ini/
+acbr_certs/
+
+# Scratchpad — working notes, test PDFs, session inputs
+scratch/
+
+# AI agent session files — use docs/handoff-YYYY-MM-DD.md instead
+GEMINI.md
+handoff.md
+
+# Archives
+*.rar
+*.7z
+
+# Legacy STX REST API spec — não é o contrato desta DLL (ver docs/json-contracts.md).
+# Mantido apenas como referência local; o spec do projeto G3 é APIBoletoG3/APIBoleto.yaml.
+swagger.json
