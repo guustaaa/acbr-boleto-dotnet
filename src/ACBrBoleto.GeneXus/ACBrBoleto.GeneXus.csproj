@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>ACBrBoleto.GeneXus</AssemblyName>
+    <RootNamespace>ACBrBoleto.GeneXus</RootNamespace>
+    <Description>EntryPoint estático para GeneXus. Recebe JSON, retorna JSON. Sem dependência de banco de dados.</Description>
+    <Version>3.0.0</Version>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ACBrBoleto.Core\ACBrBoleto.Core.csproj" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging"             Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console"    Version="8.0.0" />
+  </ItemGroup>
+</Project>
