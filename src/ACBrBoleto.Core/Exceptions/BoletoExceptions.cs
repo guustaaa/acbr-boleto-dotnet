@@ -3,8 +3,8 @@ namespace ACBrBoleto.Core.Exceptions;
 /// <summary>Exceção base do domínio.</summary>
 public class AcbrBoletoException : Exception
 {
-    public string? Operacao    { get; }
-    public int?    ConfigId    { get; }
+    public string? Operacao { get; }
+    public int? ConfigId { get; }
 
     public AcbrBoletoException(string message, string? operacao = null, int? configId = null)
         : base(message) { Operacao = operacao; ConfigId = configId; }
@@ -35,7 +35,8 @@ public sealed class PoolTimeoutException : AcbrBoletoException
 {
     public PoolTimeoutException(int configId, TimeSpan timeout)
         : base($"Timeout de {timeout.TotalSeconds:F0}s aguardando instância ACBrLib para config {configId}.",
-               configId: configId) { }
+               configId: configId)
+    { }
 }
 
 /// <summary>ConfigBoleto inválida — campos obrigatórios ausentes.</summary>

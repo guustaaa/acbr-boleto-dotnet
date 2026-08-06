@@ -91,11 +91,11 @@ internal static class Bootstrapper
 
     private static LogLevel ParseNivel(string s) => s.ToLowerInvariant() switch
     {
-        "debug"       => LogLevel.Debug,
+        "debug" => LogLevel.Debug,
         "information" => LogLevel.Information,
-        "warning"     => LogLevel.Warning,
-        "error"       => LogLevel.Error,
-        _             => LogLevel.Information
+        "warning" => LogLevel.Warning,
+        "error" => LogLevel.Error,
+        _ => LogLevel.Information
     };
 }
 
@@ -127,7 +127,7 @@ internal sealed class FileLogger : ILogger
     {
         if (!IsEnabled(level)) return;
         // Substitui a data SÓ no nome do arquivo — o diretório pode conter '-' (ex. /boletos-dir).
-        var dir  = Path.GetDirectoryName(_tpl) ?? ".";
+        var dir = Path.GetDirectoryName(_tpl) ?? ".";
         var name = Path.GetFileName(_tpl).Replace("-", $"-{DateTime.Today:yyyyMMdd}");
         var path = Path.Combine(dir, name);
         var line = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff} [{level,-11}] {_cat} | {fmt(state, ex)}";

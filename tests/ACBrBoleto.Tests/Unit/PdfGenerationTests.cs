@@ -49,7 +49,7 @@ public class PdfGenerationTests
         var cfg = new ConfigBoleto();
 
         var ini = StxSerializer.GerarTituloIni(t, cli, cfg);
-        
+
         // Deve conter a chave mas com valor vazio, não 0000-00-00
         ini.Should().Contain("DataProcessamento=\r\n");
     }

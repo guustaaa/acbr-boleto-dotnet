@@ -17,7 +17,7 @@ public class EntryPointContractTests
     private static readonly JsonSerializerOptions _j = new()
     {
         PropertyNameCaseInsensitive = true,
-        DefaultIgnoreCondition      = JsonIgnoreCondition.WhenWritingNull
+        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
     };
 
     // ── Serialização dos DTOs Normalizados ───────────────────────────────────
@@ -27,11 +27,11 @@ public class EntryPointContractTests
     {
         var r = new GerarBoletoResponse
         {
-            sucesso         = true,
-            mensagem        = "ok",
-            nossoNumero     = "001",
-            codigoBarras    = "34191...",
-            linhaDigitavel  = "34191.23456...",
+            sucesso = true,
+            mensagem = "ok",
+            nossoNumero = "001",
+            codigoBarras = "34191...",
+            linhaDigitavel = "34191.23456...",
         };
 
         var json = JsonSerializer.Serialize(r, _j);
@@ -45,7 +45,7 @@ public class EntryPointContractTests
     [Fact]
     public void GerarBoletoResponse_CamposNulos_NaoSaoIncluidos()
     {
-        var r    = BaseResponse.Ok<GerarBoletoResponse>("apenas sucesso");
+        var r = BaseResponse.Ok<GerarBoletoResponse>("apenas sucesso");
         var json = JsonSerializer.Serialize(r, _j);
 
         json.Should().NotContain("pdfBase64");
@@ -68,7 +68,7 @@ public class EntryPointContractTests
     public void ConfigJson_CamposObrigatorios_Deserializa()
     {
         var json = MontarConfigJson(id: 1, banco: 341);
-        var cfg  = JsonSerializer.Deserialize<ConfigBoleto>(json, _j)!;
+        var cfg = JsonSerializer.Deserialize<ConfigBoleto>(json, _j)!;
 
         cfg.id.Should().Be(1);
         cfg.codbanco.Should().Be(341);
@@ -164,11 +164,11 @@ public class EntryPointContractTests
     {
         var r = new ConsultaDetalheResponse
         {
-            sucesso      = true,
-            nossoNumero  = "001",
-            situacao     = "PAGO",
-            dataPagamento= "15/06/2025",
-            valorPago    = "250.00",
+            sucesso = true,
+            nossoNumero = "001",
+            situacao = "PAGO",
+            dataPagamento = "15/06/2025",
+            valorPago = "250.00",
         };
 
         var json = JsonSerializer.Serialize(r, _j);
@@ -184,13 +184,13 @@ public class EntryPointContractTests
     {
         var r = new GerarBoletoResponse
         {
-            sucesso         = true,
-            nossoNumero     = "001",
+            sucesso = true,
+            nossoNumero = "001",
             pix = new PixDados
             {
-                url   = "https://banco.com/pix/001",
-                emv   = "00020126580014br.gov.bcb.pix...",
-                txid  = "TX123456789012345678901234",
+                url = "https://banco.com/pix/001",
+                emv = "00020126580014br.gov.bcb.pix...",
+                txid = "TX123456789012345678901234",
             }
         };
 
@@ -226,10 +226,10 @@ public class EntryPointContractTests
     [Fact]
     public void ConfigBoleto_RoundTrip_MantemHash()
     {
-        var cfg      = StxModelsTests.CriarConfig();
+        var cfg = StxModelsTests.CriarConfig();
         var hashOrig = cfg.ComputarHash();
-        var json     = JsonSerializer.Serialize(cfg, _j);
-        var cfg2     = JsonSerializer.Deserialize<ConfigBoleto>(json, _j)!;
+        var json = JsonSerializer.Serialize(cfg, _j);
+        var cfg2 = JsonSerializer.Deserialize<ConfigBoleto>(json, _j)!;
         cfg2.ComputarHash().Should().Be(hashOrig);
     }
 
@@ -238,15 +238,15 @@ public class EntryPointContractTests
     [Fact]
     public void GerarBoleto_Contrato_TodosOsJsonsSaoValidos()
     {
-        var configJson  = MontarConfigJson();
-        var tituloJson  = JsonSerializer.Serialize(StxModelsTests.CriarTitulo(), _j);
+        var configJson = MontarConfigJson();
+        var tituloJson = JsonSerializer.Serialize(StxModelsTests.CriarTitulo(), _j);
         var clienteJson = JsonSerializer.Serialize(StxModelsTests.CriarCliente(), _j);
         var unidadeJson = JsonSerializer.Serialize(StxModelsTests.CriarUnidade(), _j);
 
-        var cfg  = JsonSerializer.Deserialize<ConfigBoleto>(configJson, _j);
-        var tit  = JsonSerializer.Deserialize<Titulo>(tituloJson, _j);
-        var cli  = JsonSerializer.Deserialize<Cliente>(clienteJson, _j);
-        var uni  = JsonSerializer.Deserialize<Unidade>(unidadeJson, _j);
+        var cfg = JsonSerializer.Deserialize<ConfigBoleto>(configJson, _j);
+        var tit = JsonSerializer.Deserialize<Titulo>(tituloJson, _j);
+        var cli = JsonSerializer.Deserialize<Cliente>(clienteJson, _j);
+        var uni = JsonSerializer.Deserialize<Unidade>(unidadeJson, _j);
 
         cfg.Should().NotBeNull();
         tit.Should().NotBeNull();

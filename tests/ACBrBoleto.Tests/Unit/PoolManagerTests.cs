@@ -131,7 +131,7 @@ public class PoolManagerTests : IDisposable
     public void Dispose_PodeSerChamadoDuasVezes_SemExcecao()
     {
         var pool = new PoolManager(NullLogger<PoolManager>.Instance);
-        var act  = () => { pool.Dispose(); pool.Dispose(); };
+        var act = () => { pool.Dispose(); pool.Dispose(); };
         act.Should().NotThrow();
     }
 
@@ -162,19 +162,19 @@ public class PoolManagerTests : IDisposable
 
     private static ConfigBoleto ConfigBase() => new()
     {
-        id              = 1,
-        codbanco        = 341,
-        agencia         = "1234",
-        agenciadig      = "5",
-        conta           = "12345",
-        contadig        = "6",
-        carteira        = "109",
-        ws_clientid     = "cid",
+        id = 1,
+        codbanco = 341,
+        agencia = "1234",
+        agenciadig = "5",
+        conta = "12345",
+        contadig = "6",
+        carteira = "109",
+        ws_clientid = "cid",
         ws_clientsecret = "cs",
-        ws_scope        = "boleto",
-        ws_ambiente     = 1,
-        tipocobranca    = 6,
-        caminhoACBrLib  = @"C:\nao\existe.dll",  // inválido → vai lançar ConfigInvalida
+        ws_scope = "boleto",
+        ws_ambiente = 1,
+        tipocobranca = 6,
+        caminhoACBrLib = @"C:\nao\existe.dll",  // inválido → vai lançar ConfigInvalida
     };
 
     private static ConfigBoleto ConfigSemCampo(Action<ConfigBoleto> mutar)

@@ -28,10 +28,10 @@ public class HelpersTests
     }
 
     [Theory]
-    [InlineData("123.45",   123.45)]
-    [InlineData("1",        1.0)]
-    [InlineData("0.01",     0.01)]
-    [InlineData("1000000",  1000000.0)]
+    [InlineData("123.45", 123.45)]
+    [InlineData("1", 1.0)]
+    [InlineData("0.01", 0.01)]
+    [InlineData("1000000", 1000000.0)]
     public void ParsePositiveDecimal_EntradaValida_RetornaDecimalCorreto(string input, double expected)
     {
         var result = BoletoEntryPoint.ParsePositiveDecimal(input, "campo");
@@ -44,28 +44,28 @@ public class HelpersTests
 
     [Theory]
     // locale brasileiro (vírgula decimal) — caso mais comum da ACBrLib
-    [InlineData("252,50",        "252.50")]
-    [InlineData("252,5",         "252.50")]
-    [InlineData("0,00",          "0.00")]
+    [InlineData("252,50", "252.50")]
+    [InlineData("252,5", "252.50")]
+    [InlineData("0,00", "0.00")]
     // locale invariável (ponto decimal)
-    [InlineData("252.50",        "252.50")]
-    [InlineData("1252",          "1252.00")]
+    [InlineData("252.50", "252.50")]
+    [InlineData("1252", "1252.00")]
     // milhar + decimal nos dois formatos
-    [InlineData("1.252,50",      "1252.50")]
-    [InlineData("1,252.50",      "1252.50")]
-    [InlineData("1.234.567,89",  "1234567.89")]
-    [InlineData("1,234,567.89",  "1234567.89")]
+    [InlineData("1.252,50", "1252.50")]
+    [InlineData("1,252.50", "1252.50")]
+    [InlineData("1.234.567,89", "1234567.89")]
+    [InlineData("1,234,567.89", "1234567.89")]
     // separador único seguido de exatamente 3 dígitos = milhar, não decimal
     // (não há como distinguir de uma fração de 3 casas; boletos usam 2 casas)
-    [InlineData("1.250",         "1250.00")]
-    [InlineData("1,250",         "1250.00")]
+    [InlineData("1.250", "1250.00")]
+    [InlineData("1,250", "1250.00")]
     // mais de 2 casas decimais (4+ dígitos = inequivocamente decimal) → arredonda p/ 2
-    [InlineData("252,5000",      "252.50")]
-    [InlineData("10,0070",       "10.01")]
+    [InlineData("252,5000", "252.50")]
+    [InlineData("10,0070", "10.01")]
     // negativos e ruído (R$, espaços)
-    [InlineData("-50,00",        "-50.00")]
-    [InlineData("R$ 1.500,75",   "1500.75")]
-    [InlineData(" 99,90 ",       "99.90")]
+    [InlineData("-50,00", "-50.00")]
+    [InlineData("R$ 1.500,75", "1500.75")]
+    [InlineData(" 99,90 ", "99.90")]
     public void NormalizarMoeda_ConverteParaFormatoGeneXus(string entrada, string esperado)
     {
         StxSerializer.NormalizarMoeda(entrada).Should().Be(esperado);
@@ -90,8 +90,8 @@ public class HelpersTests
     {
         var d = new StxSerializer.DadosRetorno
         {
-            Sucesso  = false,
-            Erro     = "erro-teste",
+            Sucesso = false,
+            Erro = "erro-teste",
             Mensagem = "mensagem-teste"
         };
 
@@ -105,7 +105,7 @@ public class HelpersTests
     {
         var d = new StxSerializer.DadosRetorno
         {
-            Sucesso  = true,
+            Sucesso = true,
             Mensagem = "ok"
         };
 

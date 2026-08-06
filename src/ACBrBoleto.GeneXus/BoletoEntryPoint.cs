@@ -46,11 +46,11 @@ public static class BoletoEntryPoint
     private static readonly JsonSerializerOptions _j = new()
     {
         PropertyNameCaseInsensitive = true,
-        WriteIndented               = false,
-        DefaultIgnoreCondition      = JsonIgnoreCondition.WhenWritingNull,
-        NumberHandling              = JsonNumberHandling.AllowReadingFromString,
-        Encoder                     = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
-        Converters                  = { new TolerantIntConverter() }
+        WriteIndented = false,
+        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+        NumberHandling = JsonNumberHandling.AllowReadingFromString,
+        Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+        Converters = { new TolerantIntConverter() }
     };
 
     private sealed class LogCategory { }
@@ -96,7 +96,7 @@ public static class BoletoEntryPoint
         => Executar<ConsultaListaResponse>("ConsultarLista", configJson, (svc, cfg) =>
         {
             var filtro = Des<FiltroWS>(filtroJson);
-            var uni    = Des<Unidade>(unidadeJson);
+            var uni = Des<Unidade>(unidadeJson);
             return svc.ConsultarLista(filtro, uni, cfg);
         });
 
@@ -193,17 +193,17 @@ public static class BoletoEntryPoint
     {
         Bootstrapper.EnsureInicializado();
         var log = Bootstrapper.GetLogger<LogCategory>();
-        var sw  = Stopwatch.StartNew();
+        var sw = Stopwatch.StartNew();
         log.LogInformation("[GX→] {Op}", op);
         try
         {
             var cfg = Des<ConfigBoleto>(cfgJson);
-            var t   = Des<Titulo>(titJson);
+            var t = Des<Titulo>(titJson);
             var cli = Des<Cliente>(cliJson);
             var uni = Des<Unidade>(uniJson);
 
             if (cfg.id <= 0) throw new ArgumentException("ConfigBoleto inválido: 'id' não informado.");
-            if (string.IsNullOrWhiteSpace(t.nossonumero) && op != "GerarBoleto") 
+            if (string.IsNullOrWhiteSpace(t.nossonumero) && op != "GerarBoleto")
                 throw new ArgumentException("Titulo inválido: 'nossonumero' não informado.");
 
             var lease = Bootstrapper.GetPool()
@@ -231,11 +231,11 @@ public static class BoletoEntryPoint
     {
         Bootstrapper.EnsureInicializado();
         var log = Bootstrapper.GetLogger<LogCategory>();
-        var sw  = Stopwatch.StartNew();
+        var sw = Stopwatch.StartNew();
         log.LogInformation("[GX→] {Op}", op);
         try
         {
-            var cfg   = Des<ConfigBoleto>(cfgJson);
+            var cfg = Des<ConfigBoleto>(cfgJson);
             if (cfg.id <= 0) throw new ArgumentException("ConfigBoleto inválido: 'id' não informado.");
             var lease = Bootstrapper.GetPool()
                 .AlugarAsync(cfg, CancellationToken.None)

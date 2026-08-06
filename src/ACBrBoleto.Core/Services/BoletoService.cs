@@ -14,15 +14,15 @@ namespace ACBrBoleto.Core.Services;
 public sealed class BoletoService : IDisposable
 {
     private readonly AcbrLibLease _lease;
-    private readonly int          _configId;
-    private readonly ILogger      _logger;
+    private readonly int _configId;
+    private readonly ILogger _logger;
     private bool _disposed;
 
     public BoletoService(AcbrLibLease lease, int configId, ILogger logger)
     {
-        _lease    = lease;
+        _lease = lease;
         _configId = configId;
-        _logger   = logger;
+        _logger = logger;
     }
 
     // ── Gerar / Enviar boleto ────────────────────────────────────────────────
@@ -37,7 +37,7 @@ public sealed class BoletoService : IDisposable
             var h = _lease.Handle;
 
             var cedenteIni = StxSerializer.GerarCedenteIni(uni, cfg, "");
-            var tituloIni  = StxSerializer.GerarTituloIni(t, cli, cfg);
+            var tituloIni = StxSerializer.GerarTituloIni(t, cli, cfg);
 
             _logger.LogDebug("[cfg={Id}] INI Cedente:\n{Ini}", _configId, cedenteIni);
             _logger.LogDebug("[cfg={Id}] INI Titulo:\n{Ini}", _configId, tituloIni);
@@ -85,9 +85,9 @@ public sealed class BoletoService : IDisposable
     {
         return Executar<ConsultaDetalheResponse>("ConsultarDetalhe", t.nossonumero, () =>
         {
-            var h          = _lease.Handle;
+            var h = _lease.Handle;
             var cedenteIni = StxSerializer.GerarCedenteIni(uni, cfg, "");
-            var tituloIni  = StxSerializer.GerarTituloIni(t, cli, cfg);
+            var tituloIni = StxSerializer.GerarTituloIni(t, cli, cfg);
             _logger.LogDebug("[cfg={Id}] INI Cedente (Consulta):\n{Ini}", _configId, cedenteIni);
             _logger.LogDebug("[cfg={Id}] INI ConsultarDetalhe:\n{Ini}", _configId, tituloIni);
             ConfigurarCedente(h, _configId, cedenteIni);
@@ -100,46 +100,46 @@ public sealed class BoletoService : IDisposable
             r.nossoNumero = t.nossonumero;
 
             var d = StxSerializer.ParseRetornoConsulta(retIni);
-            r.situacao              = d.Situacao;
-            r.pago                  = d.Pago;
-            r.dataPagamento         = d.DataPagamento;
-            r.dataOcorrencia        = d.DataOcorrencia;
-            r.dataBaixa             = d.DataBaixa;
-            r.valorPago             = d.ValorPago;
+            r.situacao = d.Situacao;
+            r.pago = d.Pago;
+            r.dataPagamento = d.DataPagamento;
+            r.dataOcorrencia = d.DataOcorrencia;
+            r.dataBaixa = d.DataBaixa;
+            r.valorPago = d.ValorPago;
             // Itaú boletoscash (e outros) não retornam o valor recebido quando o boleto é liquidado
             // via PIX/BoleCode. Quando o banco confirma a liquidação (pago) mas omite o valor, o
             // boleto não-parcial foi quitado integralmente: usamos o valor do documento para a
             // conciliação a jusante. Pagamentos parciais reportados pelo banco (>0) ficam intactos.
             if (r.pago && EhValorZeroOuVazio(r.valorPago))
                 r.valorPago = t.valordocumento.ToString("F2", System.Globalization.CultureInfo.InvariantCulture);
-            r.valorJurosMora        = d.ValorJurosMora;
-            r.valorMulta            = d.ValorMulta;
-            r.valorDesconto         = d.ValorDesconto;
-            r.valorAbatimento       = d.ValorAbatimento;
-            r.valorIOF              = d.ValorIOF;
-            r.valorOutrasDespesas   = d.ValorOutrasDespesas;
-            r.valorOutrosCreditos   = d.ValorOutrosCreditos;
-            r.valorDespesaCobranca  = d.ValorDespesaCobranca;
-            r.codTipoOcorrencia     = d.CodTipoOcorrencia;
+            r.valorJurosMora = d.ValorJurosMora;
+            r.valorMulta = d.ValorMulta;
+            r.valorDesconto = d.ValorDesconto;
+            r.valorAbatimento = d.ValorAbatimento;
+            r.valorIOF = d.ValorIOF;
+            r.valorOutrasDespesas = d.ValorOutrasDespesas;
+            r.valorOutrosCreditos = d.ValorOutrosCreditos;
+            r.valorDespesaCobranca = d.ValorDespesaCobranca;
+            r.codTipoOcorrencia = d.CodTipoOcorrencia;
             r.descricaoTipoOcorrencia = d.DescricaoTipoOcorrencia;
-            r.motivosRejeicao       = d.MotivosRejeicao;
-            r.urlBoleto             = d.UrlBoleto;
-            r.idBanco               = d.IdBanco;
+            r.motivosRejeicao = d.MotivosRejeicao;
+            r.urlBoleto = d.UrlBoleto;
+            r.idBanco = d.IdBanco;
             r.rawJson = incluirRawJson ? d.RawJson : string.Empty;
 
             // Barcode / linha: use dedicated functions (more reliable than INI key parsing)
-            try { r.codigoBarras   = h.RetornaCodigoBarras(1);   } catch { }
+            try { r.codigoBarras = h.RetornaCodigoBarras(1); } catch { }
             try { r.linhaDigitavel = h.RetornaLinhaDigitavel(1); } catch { }
             // Fall back to INI-parsed values if direct calls returned nothing
-            if (string.IsNullOrWhiteSpace(r.codigoBarras))   r.codigoBarras   = d.CodigoBarras;
+            if (string.IsNullOrWhiteSpace(r.codigoBarras)) r.codigoBarras = d.CodigoBarras;
             if (string.IsNullOrWhiteSpace(r.linhaDigitavel)) r.linhaDigitavel = d.LinhaDigitavel;
 
             if (!string.IsNullOrWhiteSpace(d.QrCodePixEmv) || !string.IsNullOrWhiteSpace(d.QrCodePixTxId) || !string.IsNullOrWhiteSpace(d.QrCodePixUrl))
             {
                 r.pix = new PixDados
                 {
-                    url  = d.QrCodePixUrl,
-                    emv  = d.QrCodePixEmv,
+                    url = d.QrCodePixUrl,
+                    emv = d.QrCodePixEmv,
                     txid = d.QrCodePixTxId
                 };
             }
@@ -154,7 +154,7 @@ public sealed class BoletoService : IDisposable
     {
         return Executar<ConsultaListaResponse>("ConsultarLista", "filtro", () =>
         {
-            var h          = _lease.Handle;
+            var h = _lease.Handle;
             var cedenteIni = StxSerializer.GerarCedenteIni(uni, cfg, "");
             _logger.LogDebug("[cfg={Id}] INI Cedente (ConsultarLista):\n{Ini}", _configId, cedenteIni);
             ConfigurarCedente(h, _configId, cedenteIni);
@@ -172,7 +172,7 @@ public sealed class BoletoService : IDisposable
                 if (httpMatch.Success && int.TryParse(httpMatch.Groups[1].Value, out var httpCode) && httpCode >= 400)
                 {
                     var msgMatch = System.Text.RegularExpressions.Regex.Match(ultimoRetorno, @"Mensagem=(.+)");
-                    var bankMsg  = msgMatch.Success ? msgMatch.Groups[1].Value.Trim() : string.Empty;
+                    var bankMsg = msgMatch.Success ? msgMatch.Groups[1].Value.Trim() : string.Empty;
                     return BaseResponse.Falha<ConsultaListaResponse>(
                         string.IsNullOrWhiteSpace(bankMsg) ? $"Banco retornou HTTP {httpCode}" : $"[HTTP {httpCode}] {bankMsg}");
                 }
@@ -210,7 +210,7 @@ public sealed class BoletoService : IDisposable
             _logger.LogDebug("[cfg={Id}] Retorno EnviarBoleto(tpAltera):\n{Ret}", _configId, retIni);
 
             var dadosRetorno = StxSerializer.ParseRetornoEnviar(retIni);
-            
+
             var r = BaseResponse.Ok<GerarPdfResponse>("Vencimento alterado com sucesso.");
             r.sucesso = dadosRetorno.Sucesso;
             if (!r.sucesso)
@@ -450,7 +450,7 @@ public sealed class BoletoService : IDisposable
             // Sem endereço do beneficiário: o motor FPDF concatena Nome+CNPJ+Logradouro na linha
             // "Beneficiário/CNPJ/CPF/Endereço" da ficha (célula fixa que corta a palavra). Só no PDF.
             var cedenteIni = StxSerializer.GerarCedenteIni(uni, cfg, fileName, incluirEndereco: false);
-            var tituloIni  = StxSerializer.GerarTituloIni(t, cli, cfg, uni);
+            var tituloIni = StxSerializer.GerarTituloIni(t, cli, cfg, uni);
 
             _logger.LogDebug("[cfg={Id}] INI Cedente (PDF):\n{Ini}", _configId, cedenteIni);
             _logger.LogDebug("[cfg={Id}] INI Titulo (PDF):\n{Ini}", _configId, tituloIni);
@@ -473,7 +473,7 @@ public sealed class BoletoService : IDisposable
     {
         return Executar<GerarPdfBase64Response>("GerarPdfBase64", t.nossonumero, () =>
         {
-            var h        = _lease.Handle;
+            var h = _lease.Handle;
             var fileName = $"boleto_b64_{t.nossonumero.Trim()}_{Guid.NewGuid().ToString("N")[..8]}.pdf";
             var tempPath = Path.Combine(Path.GetTempPath(), fileName);
 
@@ -481,7 +481,7 @@ public sealed class BoletoService : IDisposable
             // Path.Combine(pastaOutAbs, tempPath) → tempPath (rooted, wins on Windows)
             // incluirEndereco:false → mesma razão de GerarPdf (linha da ficha corta o endereço).
             var cedenteIni = StxSerializer.GerarCedenteIni(uni, cfg, tempPath, incluirEndereco: false);
-            var tituloIni  = StxSerializer.GerarTituloIni(t, cli, cfg, uni);
+            var tituloIni = StxSerializer.GerarTituloIni(t, cli, cfg, uni);
 
             ConfigurarCedente(h, _configId, cedenteIni);
             h.LimparLista();
@@ -502,9 +502,9 @@ public sealed class BoletoService : IDisposable
             }
             else
             {
-                r.sucesso  = false;
+                r.sucesso = false;
                 r.mensagem = "PDF Base64 não gerado: arquivo temporário não encontrado após chamada à ACBrLib.";
-                r.erro     = "[ACBrLib op=GerarPDFBoleto cod=0] Arquivo PDF não foi criado no caminho esperado.";
+                r.erro = "[ACBrLib op=GerarPDFBoleto cod=0] Arquivo PDF não foi criado no caminho esperado.";
             }
 
             return r;
@@ -535,13 +535,13 @@ public sealed class BoletoService : IDisposable
         {
             r.pix = new PixDados
             {
-                emv    = consDado.QrCodePixEmv,
-                url    = consDado.QrCodePixUrl,
-                txid   = consDado.QrCodePixTxId,
+                emv = consDado.QrCodePixEmv,
+                url = consDado.QrCodePixUrl,
+                txid = consDado.QrCodePixTxId,
                 base64 = consDado.QrCodePixBase64
             };
-            t.qrcodepix_emv  = consDado.QrCodePixEmv;
-            t.qrcodepix_url  = consDado.QrCodePixUrl;
+            t.qrcodepix_emv = consDado.QrCodePixEmv;
+            t.qrcodepix_url = consDado.QrCodePixUrl;
             t.qrcodepix_txid = consDado.QrCodePixTxId;
         }
 
@@ -570,14 +570,14 @@ public sealed class BoletoService : IDisposable
         // Surface o que a própria resposta da operação já trouxe (sem chamada extra ao banco).
         // Pode vir vazio em operações que o banco não ecoa o boleto — o lado GeneXus só deve
         // gravar quando não-vazio para não apagar um valor bom.
-        r.codigoBarras   = d.CodigoBarras;
+        r.codigoBarras = d.CodigoBarras;
         r.linhaDigitavel = d.LinhaDigitavel;
         if (!string.IsNullOrWhiteSpace(d.QrCodePixEmv) || !string.IsNullOrWhiteSpace(d.QrCodePixUrl))
         {
             r.pix = new PixDados
             {
-                emv  = d.QrCodePixEmv,
-                url  = d.QrCodePixUrl,
+                emv = d.QrCodePixEmv,
+                url = d.QrCodePixUrl,
                 txid = d.QrCodePixTxId
             };
         }

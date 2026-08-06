@@ -19,7 +19,7 @@ internal static class StxSerializer
 
         var sb = new StringBuilder();
         var cpfCnpjLimpo = LimparMascaras(uni.cpfcnpj);
-        var tipoReal     = MapearTipoPessoa(uni.tipo, cpfCnpjLimpo);
+        var tipoReal = MapearTipoPessoa(uni.tipo, cpfCnpjLimpo);
 
         sb.AppendLine("[Cedente]");
         sb.AppendLine($"Nome={uni.nome.Trim()}");
@@ -140,25 +140,25 @@ internal static class StxSerializer
         sb.AppendLine("[BoletoBancoFCFortesConfig]");
         var fortes = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
         {
-            ["Filtro"]              = "1",                                       // 1 = PDF
-            ["Layout"]              = (cfg.indicadorpix > 0 ? 8 : 0).ToString(), // 8 = PadraoPIX, 0 = Padrão (sem PIX). NÃO usar 1=Carnê: coluna estreita quebra os campos Beneficiário/CNPJ/Endereço caractere a caractere
-            ["MostrarPreview"]      = "0",
-            ["MostrarProgresso"]    = "0",
-            ["MostrarSetup"]        = "0",
+            ["Filtro"] = "1",                                       // 1 = PDF
+            ["Layout"] = (cfg.indicadorpix > 0 ? 8 : 0).ToString(), // 8 = PadraoPIX, 0 = Padrão (sem PIX). NÃO usar 1=Carnê: coluna estreita quebra os campos Beneficiário/CNPJ/Endereço caractere a caractere
+            ["MostrarPreview"] = "0",
+            ["MostrarProgresso"] = "0",
+            ["MostrarSetup"] = "0",
             ["AlterarEscalaPadrao"] = "1",
-            ["NovaEscala"]          = "94",
-            ["MargemEsquerda"]      = "5",
-            ["MargemDireita"]       = "3",
-            ["MargemSuperior"]      = "1",
-            ["MargemInferior"]      = "1",
+            ["NovaEscala"] = "94",
+            ["MargemEsquerda"] = "5",
+            ["MargemDireita"] = "3",
+            ["MargemSuperior"] = "1",
+            ["MargemInferior"] = "1",
         };
         AplicarFortesOverride(fortes);
         foreach (var kv in fortes)
             sb.AppendLine($"{kv.Key}={kv.Value}");
-        
+
         if (!string.IsNullOrWhiteSpace(cfg.dirLogo))
             sb.AppendLine($"DirLogo={cfg.dirLogo.Trim()}");
-        
+
         if (!string.IsNullOrWhiteSpace(cfg.pastaOutput))
         {
             var pastaOutAbs = Path.GetFullPath(cfg.pastaOutput);
@@ -201,15 +201,15 @@ internal static class StxSerializer
 
     public static string GerarTituloIni(Titulo t, Cliente cli, ConfigBoleto cfg, Unidade? uni = null)
     {
-        int tipoDesc     = t.TipoDesconto     > 0 ? t.TipoDesconto     : cfg.tipodesconto;
-        int codJuros     = t.CodigoMoraJuros  > 0 ? t.CodigoMoraJuros  : cfg.codigomorajuros;
-        int codMulta     = t.CodigoMulta      > 0 ? t.CodigoMulta      : cfg.codigomulta;
-        int codNegativ   = t.CodigoNegativacao > 0 ? t.CodigoNegativacao : cfg.codigonegativacao;
-        int diasProt     = t.DiasProtesto     > 0 ? t.DiasProtesto     : cfg.diasprotesto;
-        var aceite       = cfg.aceite == 1 ? "A" : "N";
-        var especie      = string.IsNullOrWhiteSpace(cfg.especiedoc) ? "DM" : cfg.especiedoc.Trim();
-        var cliCpfCnpj   = LimparMascaras(cli.cpfcnpj);
-        var cliTipo      = MapearTipoPessoa(cli.tipo, cliCpfCnpj);
+        int tipoDesc = t.TipoDesconto > 0 ? t.TipoDesconto : cfg.tipodesconto;
+        int codJuros = t.CodigoMoraJuros > 0 ? t.CodigoMoraJuros : cfg.codigomorajuros;
+        int codMulta = t.CodigoMulta > 0 ? t.CodigoMulta : cfg.codigomulta;
+        int codNegativ = t.CodigoNegativacao > 0 ? t.CodigoNegativacao : cfg.codigonegativacao;
+        int diasProt = t.DiasProtesto > 0 ? t.DiasProtesto : cfg.diasprotesto;
+        var aceite = cfg.aceite == 1 ? "A" : "N";
+        var especie = string.IsNullOrWhiteSpace(cfg.especiedoc) ? "DM" : cfg.especiedoc.Trim();
+        var cliCpfCnpj = LimparMascaras(cli.cpfcnpj);
+        var cliTipo = MapearTipoPessoa(cli.tipo, cliCpfCnpj);
 
         var sb = new StringBuilder();
         sb.AppendLine("[Titulo1]");
@@ -273,9 +273,9 @@ internal static class StxSerializer
             sb.AppendLine($"LocalPagamento={cfg.localpagamento.Trim()}");
 
         // Mensagem/Informativo: cfg (padrão unidade) | titulo (específico do título)
-        var mensagem    = CombinarTexto(cfg.mensagem,    t.mensagem);
+        var mensagem = CombinarTexto(cfg.mensagem, t.mensagem);
         var informativo = CombinarTexto(cfg.informativo, t.informativo);
-        if (!string.IsNullOrWhiteSpace(mensagem))    sb.AppendLine($"Mensagem={mensagem}");
+        if (!string.IsNullOrWhiteSpace(mensagem)) sb.AppendLine($"Mensagem={mensagem}");
         if (!string.IsNullOrWhiteSpace(informativo)) sb.AppendLine($"Informativo={informativo}");
 
         // Logo da empresa (cedente): replica a da unidade no título quando informada.
@@ -420,24 +420,24 @@ internal static class StxSerializer
         public string IdBanco { get; set; } = string.Empty;
 
         // ── Consulta ──────────────────────────────────────────────────────────
-        public string Situacao            { get; set; } = string.Empty;
-        public bool   Pago                { get; set; }
-        public string DataPagamento       { get; set; } = string.Empty;
-        public string DataOcorrencia      { get; set; } = string.Empty;
-        public string DataBaixa           { get; set; } = string.Empty;
-        public string ValorPago           { get; set; } = string.Empty;
-        public string ValorJurosMora      { get; set; } = string.Empty;
-        public string ValorMulta          { get; set; } = string.Empty;
-        public string ValorDesconto       { get; set; } = string.Empty;
-        public string ValorAbatimento     { get; set; } = string.Empty;
-        public string ValorIOF            { get; set; } = string.Empty;
+        public string Situacao { get; set; } = string.Empty;
+        public bool Pago { get; set; }
+        public string DataPagamento { get; set; } = string.Empty;
+        public string DataOcorrencia { get; set; } = string.Empty;
+        public string DataBaixa { get; set; } = string.Empty;
+        public string ValorPago { get; set; } = string.Empty;
+        public string ValorJurosMora { get; set; } = string.Empty;
+        public string ValorMulta { get; set; } = string.Empty;
+        public string ValorDesconto { get; set; } = string.Empty;
+        public string ValorAbatimento { get; set; } = string.Empty;
+        public string ValorIOF { get; set; } = string.Empty;
         public string ValorOutrasDespesas { get; set; } = string.Empty;
         public string ValorOutrosCreditos { get; set; } = string.Empty;
-        public string ValorDespesaCobranca{ get; set; } = string.Empty;
-        public string CodTipoOcorrencia       { get; set; } = string.Empty;
+        public string ValorDespesaCobranca { get; set; } = string.Empty;
+        public string CodTipoOcorrencia { get; set; } = string.Empty;
         public string DescricaoTipoOcorrencia { get; set; } = string.Empty;
-        public List<string>? MotivosRejeicao  { get; set; }
-        public string        RawJson           { get; set; } = string.Empty;
+        public List<string>? MotivosRejeicao { get; set; }
+        public string RawJson { get; set; } = string.Empty;
 
         public string QrCodePixUrl { get; set; } = string.Empty;
         public string QrCodePixEmv { get; set; } = string.Empty;
@@ -458,21 +458,21 @@ internal static class StxSerializer
 
         if (ini.TryGetValue(regKey, out var reg))
         {
-            r.NossoNumero    = Get(reg, "IDNossoNum")    ?? Get(reg, "NossoNumero") ?? r.NossoNumero;
-            r.CodigoBarras   = Get(reg, "IDCodBarras")   ?? Get(reg, "CodBarras")   ?? r.CodigoBarras;
-            r.LinhaDigitavel = Get(reg, "IDLinhaDig")    ?? Get(reg, "IDLinha")     ?? Get(reg, "LinhaDig") ?? r.LinhaDigitavel;
-            r.UrlBoleto      = Get(reg, "IDURL")         ?? Get(reg, "URL")         ?? r.UrlBoleto;
-            r.IdBanco        = Get(reg, "IDBoleto")      ?? Get(reg, "ID")          ?? Get(reg, "Id")       ?? Get(reg, "IdBoleto") ?? Get(reg, "IdTitulo") ?? r.IdBanco;
+            r.NossoNumero = Get(reg, "IDNossoNum") ?? Get(reg, "NossoNumero") ?? r.NossoNumero;
+            r.CodigoBarras = Get(reg, "IDCodBarras") ?? Get(reg, "CodBarras") ?? r.CodigoBarras;
+            r.LinhaDigitavel = Get(reg, "IDLinhaDig") ?? Get(reg, "IDLinha") ?? Get(reg, "LinhaDig") ?? r.LinhaDigitavel;
+            r.UrlBoleto = Get(reg, "IDURL") ?? Get(reg, "URL") ?? r.UrlBoleto;
+            r.IdBanco = Get(reg, "IDBoleto") ?? Get(reg, "ID") ?? Get(reg, "Id") ?? Get(reg, "IdBoleto") ?? Get(reg, "IdTitulo") ?? r.IdBanco;
 
             var codRet = Get(reg, "CodRetorno");
-            var msg    = Get(reg, "MsgRetorno");
+            var msg = Get(reg, "MsgRetorno");
             var httpCodeStr = Get(reg, "HTTPResultCode");
-            
+
             if (!string.IsNullOrWhiteSpace(msg)) r.Mensagem = msg;
-            
+
             bool errorByCodRet = codRet != null && codRet != "00" && codRet != "0";
             bool errorByHttp = false;
-            
+
             if (!string.IsNullOrWhiteSpace(httpCodeStr) && int.TryParse(httpCodeStr, out var httpCode) && httpCode >= 400)
             {
                 errorByHttp = true;
@@ -484,9 +484,9 @@ internal static class StxSerializer
                 var baseMsg = string.IsNullOrWhiteSpace(msg) ? "Erro no envio" : msg;
                 var codInfo = codRet != null ? $"CodRetorno={codRet}" : "";
                 var httpInfo = errorByHttp ? $"HTTP={httpCodeStr}" : "";
-                
+
                 var details = string.Join(" ", new[] { codInfo, httpInfo }.Where(s => !string.IsNullOrWhiteSpace(s)));
-                
+
                 r.Erro = $"[BancoAPI] {details}: {baseMsg}".Trim();
                 if (string.IsNullOrWhiteSpace(r.Mensagem)) r.Mensagem = baseMsg;
             }
@@ -500,8 +500,8 @@ internal static class StxSerializer
         for (var n = 1; ini.TryGetValue($"REJEICAO{indice}-{n}", out var rej); n++)
         {
             codRej ??= Get(rej, "Codigo");
-            var campo  = Get(rej, "Campo");
-            var valor  = Get(rej, "Valor");
+            var campo = Get(rej, "Campo");
+            var valor = Get(rej, "Valor");
             var msgRej = Get(rej, "Mensagem");
             if (string.IsNullOrWhiteSpace(msgRej)) continue;
 
@@ -520,21 +520,21 @@ internal static class StxSerializer
 
         if (ini.TryGetValue(titKey, out var tit))
         {
-            r.NossoNumero    = Get(tit, "NossoNumero")  ?? Get(tit, "IDNossoNum")  ?? r.NossoNumero;
-            r.CodigoBarras   = Get(tit, "CodBarras")    ?? Get(tit, "IDCodBarras") ?? r.CodigoBarras;
-            r.LinhaDigitavel = Get(tit, "LinhaDig")     ?? Get(tit, "IDLinhaDig")  ?? r.LinhaDigitavel;
-            r.UrlBoleto      = Get(tit, "URL")          ?? Get(tit, "IDURL")       ?? r.UrlBoleto;
-            r.IdBanco        = Get(tit, "IDBoleto")     ?? Get(tit, "ID")          ?? Get(tit, "Id")       ?? Get(tit, "IdBoleto") ?? Get(tit, "IdTitulo") ?? r.IdBanco;
+            r.NossoNumero = Get(tit, "NossoNumero") ?? Get(tit, "IDNossoNum") ?? r.NossoNumero;
+            r.CodigoBarras = Get(tit, "CodBarras") ?? Get(tit, "IDCodBarras") ?? r.CodigoBarras;
+            r.LinhaDigitavel = Get(tit, "LinhaDig") ?? Get(tit, "IDLinhaDig") ?? r.LinhaDigitavel;
+            r.UrlBoleto = Get(tit, "URL") ?? Get(tit, "IDURL") ?? r.UrlBoleto;
+            r.IdBanco = Get(tit, "IDBoleto") ?? Get(tit, "ID") ?? Get(tit, "Id") ?? Get(tit, "IdBoleto") ?? Get(tit, "IdTitulo") ?? r.IdBanco;
 
-            var emv    = Get(tit, "emv")     ?? Get(tit, "QrCode.emv");
+            var emv = Get(tit, "emv") ?? Get(tit, "QrCode.emv");
             var urlPix = Get(tit, "url_Pix") ?? Get(tit, "url") ?? Get(tit, "QrCode.url");
-            var txid   = Get(tit, "Tx_ID")   ?? Get(tit, "txid") ?? Get(tit, "QrCode.txid");
+            var txid = Get(tit, "Tx_ID") ?? Get(tit, "txid") ?? Get(tit, "QrCode.txid");
 
-            if (!string.IsNullOrWhiteSpace(emv))    r.QrCodePixEmv    = emv;
-            if (!string.IsNullOrWhiteSpace(urlPix)) r.QrCodePixUrl    = urlPix;
-            if (!string.IsNullOrWhiteSpace(txid))   r.QrCodePixTxId   = txid;
+            if (!string.IsNullOrWhiteSpace(emv)) r.QrCodePixEmv = emv;
+            if (!string.IsNullOrWhiteSpace(urlPix)) r.QrCodePixUrl = urlPix;
+            if (!string.IsNullOrWhiteSpace(txid)) r.QrCodePixTxId = txid;
         }
-        
+
         return r;
     }
 
@@ -549,36 +549,36 @@ internal static class StxSerializer
         // TITULORETORNO1 — detailed status section (Itaú consulta detalhe)
         if (ini.TryGetValue(titKey, out var tit))
         {
-            r.Situacao     = Get(tit, "SituacaoTitulo")       ?? Get(tit, "SituacaoBoleto")
-                          ?? Get(tit, "SituacaoGeral")         ?? Get(tit, "Situacao")
-                          ?? Get(tit, "StatusTitulo")          ?? Get(tit, "EstadoTituloCobranca")
+            r.Situacao = Get(tit, "SituacaoTitulo") ?? Get(tit, "SituacaoBoleto")
+                          ?? Get(tit, "SituacaoGeral") ?? Get(tit, "Situacao")
+                          ?? Get(tit, "StatusTitulo") ?? Get(tit, "EstadoTituloCobranca")
                           ?? r.Situacao;
-            r.DataPagamento= Get(tit, "DataCredito")    ?? Get(tit, "DataPagamento")  ?? r.DataPagamento;
+            r.DataPagamento = Get(tit, "DataCredito") ?? Get(tit, "DataPagamento") ?? r.DataPagamento;
             r.DataOcorrencia = Get(tit, "DataOcorrencia") ?? r.DataOcorrencia;
-            r.DataBaixa      = Get(tit, "DataBaixa")      ?? r.DataBaixa;
+            r.DataBaixa = Get(tit, "DataBaixa") ?? r.DataBaixa;
 
-            r.ValorPago            = NormalizarMoeda(Get(tit, "ValorRecebido")        ?? Get(tit, "ValorPago") ?? r.ValorPago);
-            r.ValorJurosMora       = NormalizarMoeda(Get(tit, "ValorMoraJuros")       ?? Get(tit, "ValorJurosMora") ?? Get(tit, "ValorJuros") ?? r.ValorJurosMora);
-            r.ValorMulta           = NormalizarMoeda(Get(tit, "ValorMulta")           ?? r.ValorMulta);
-            r.ValorDesconto        = NormalizarMoeda(Get(tit, "ValorDesconto")        ?? r.ValorDesconto);
-            r.ValorAbatimento      = NormalizarMoeda(Get(tit, "ValorAbatimento")      ?? r.ValorAbatimento);
-            r.ValorIOF             = NormalizarMoeda(Get(tit, "ValorIOF")             ?? r.ValorIOF);
-            r.ValorOutrasDespesas  = NormalizarMoeda(Get(tit, "ValorOutrasDespesas")  ?? r.ValorOutrasDespesas);
-            r.ValorOutrosCreditos  = NormalizarMoeda(Get(tit, "ValorOutrosCreditos")  ?? r.ValorOutrosCreditos);
+            r.ValorPago = NormalizarMoeda(Get(tit, "ValorRecebido") ?? Get(tit, "ValorPago") ?? r.ValorPago);
+            r.ValorJurosMora = NormalizarMoeda(Get(tit, "ValorMoraJuros") ?? Get(tit, "ValorJurosMora") ?? Get(tit, "ValorJuros") ?? r.ValorJurosMora);
+            r.ValorMulta = NormalizarMoeda(Get(tit, "ValorMulta") ?? r.ValorMulta);
+            r.ValorDesconto = NormalizarMoeda(Get(tit, "ValorDesconto") ?? r.ValorDesconto);
+            r.ValorAbatimento = NormalizarMoeda(Get(tit, "ValorAbatimento") ?? r.ValorAbatimento);
+            r.ValorIOF = NormalizarMoeda(Get(tit, "ValorIOF") ?? r.ValorIOF);
+            r.ValorOutrasDespesas = NormalizarMoeda(Get(tit, "ValorOutrasDespesas") ?? r.ValorOutrasDespesas);
+            r.ValorOutrosCreditos = NormalizarMoeda(Get(tit, "ValorOutrosCreditos") ?? r.ValorOutrosCreditos);
             r.ValorDespesaCobranca = NormalizarMoeda(Get(tit, "ValorDespesaCobranca") ?? r.ValorDespesaCobranca);
 
-            r.CodTipoOcorrencia       = Get(tit, "CodTipoOcorrencia")       ?? Get(tit, "CodigoOcorrencia") ?? r.CodTipoOcorrencia;
+            r.CodTipoOcorrencia = Get(tit, "CodTipoOcorrencia") ?? Get(tit, "CodigoOcorrencia") ?? r.CodTipoOcorrencia;
             r.DescricaoTipoOcorrencia = Get(tit, "DescricaoTipoOcorrencia") ?? Get(tit, "DescricaoOcorrencia") ?? r.DescricaoTipoOcorrencia;
 
-            r.UrlBoleto    = Get(tit, "URL")      ?? r.UrlBoleto;
-            r.IdBanco      = Get(tit, "IDBoleto") ?? Get(tit, "ID") ?? Get(tit, "Id") ?? Get(tit, "IdBoleto") ?? Get(tit, "IdTitulo") ?? r.IdBanco;
+            r.UrlBoleto = Get(tit, "URL") ?? r.UrlBoleto;
+            r.IdBanco = Get(tit, "IDBoleto") ?? Get(tit, "ID") ?? Get(tit, "Id") ?? Get(tit, "IdBoleto") ?? Get(tit, "IdTitulo") ?? r.IdBanco;
 
-            r.CodigoBarras   = Get(tit, "CodBarras")    ?? Get(tit, "IDCodBarras") ?? Get(tit, "CodigoBarras") ?? r.CodigoBarras;
-            r.LinhaDigitavel = Get(tit, "LinhaDig")     ?? Get(tit, "IDLinhaDig")  ?? Get(tit, "LinhaDigitavel") ?? r.LinhaDigitavel;
+            r.CodigoBarras = Get(tit, "CodBarras") ?? Get(tit, "IDCodBarras") ?? Get(tit, "CodigoBarras") ?? r.CodigoBarras;
+            r.LinhaDigitavel = Get(tit, "LinhaDig") ?? Get(tit, "IDLinhaDig") ?? Get(tit, "LinhaDigitavel") ?? r.LinhaDigitavel;
 
-            var emv  = Get(tit, "emv")   ?? Get(tit, "QrCode.emv");
+            var emv = Get(tit, "emv") ?? Get(tit, "QrCode.emv");
             var txid = Get(tit, "Tx_ID") ?? Get(tit, "txid") ?? Get(tit, "QrCode.txid");
-            if (!string.IsNullOrWhiteSpace(emv))  r.QrCodePixEmv  = emv;
+            if (!string.IsNullOrWhiteSpace(emv)) r.QrCodePixEmv = emv;
             if (!string.IsNullOrWhiteSpace(txid)) r.QrCodePixTxId = txid;
         }
 
@@ -586,16 +586,16 @@ internal static class StxSerializer
         if (ini.TryGetValue($"REGISTRO{indice}", out var reg))
         {
             if (string.IsNullOrWhiteSpace(r.CodigoBarras))
-                r.CodigoBarras   = Get(reg, "IDCodBarras") ?? Get(reg, "CodBarras")   ?? r.CodigoBarras;
+                r.CodigoBarras = Get(reg, "IDCodBarras") ?? Get(reg, "CodBarras") ?? r.CodigoBarras;
             if (string.IsNullOrWhiteSpace(r.LinhaDigitavel))
-                r.LinhaDigitavel = Get(reg, "IDLinhaDig")  ?? Get(reg, "LinhaDig")    ?? r.LinhaDigitavel;
+                r.LinhaDigitavel = Get(reg, "IDLinhaDig") ?? Get(reg, "LinhaDig") ?? r.LinhaDigitavel;
             if (string.IsNullOrWhiteSpace(r.IdBanco))
-                r.IdBanco        = Get(reg, "IDBoleto")    ?? Get(reg, "IDNossoNum")  ?? r.IdBanco;
+                r.IdBanco = Get(reg, "IDBoleto") ?? Get(reg, "IDNossoNum") ?? r.IdBanco;
             if (string.IsNullOrWhiteSpace(r.UrlBoleto))
-                r.UrlBoleto      = Get(reg, "IDURL")       ?? Get(reg, "URL")         ?? r.UrlBoleto;
+                r.UrlBoleto = Get(reg, "IDURL") ?? Get(reg, "URL") ?? r.UrlBoleto;
             if (string.IsNullOrWhiteSpace(r.Situacao))
-                r.Situacao       = Get(reg, "SituacaoTitulo") ?? Get(reg, "SituacaoBoleto")
-                                ?? Get(reg, "SituacaoGeral")  ?? Get(reg, "Situacao") ?? r.Situacao;
+                r.Situacao = Get(reg, "SituacaoTitulo") ?? Get(reg, "SituacaoBoleto")
+                                ?? Get(reg, "SituacaoGeral") ?? Get(reg, "Situacao") ?? r.Situacao;
 
             var rawJson = Get(reg, "JSON") ?? string.Empty;
             if (!string.IsNullOrWhiteSpace(rawJson))
@@ -621,10 +621,10 @@ internal static class StxSerializer
                             {
                                 if (string.IsNullOrWhiteSpace(r.QrCodePixUrl) && qr.TryGetProperty("url", out var urlEl))
                                     r.QrCodePixUrl = urlEl.GetString() ?? string.Empty;
-                                    
+
                                 if (string.IsNullOrWhiteSpace(r.QrCodePixEmv) && qr.TryGetProperty("emv", out var emvEl))
                                     r.QrCodePixEmv = emvEl.GetString() ?? string.Empty;
-                                    
+
                                 if (string.IsNullOrWhiteSpace(r.QrCodePixBase64) && qr.TryGetProperty("imagem_base64", out var b64El))
                                     r.QrCodePixBase64 = b64El.GetString() ?? string.Empty;
                             }
@@ -656,7 +656,7 @@ internal static class StxSerializer
     {
         if (string.IsNullOrWhiteSpace(iniRetorno)) return [];
 
-        var ini   = ParseIni(iniRetorno);
+        var ini = ParseIni(iniRetorno);
         var items = new List<ConsultaListaItem>();
 
         int n = 1;
@@ -667,7 +667,7 @@ internal static class StxSerializer
             // Rebuild a single-item INI so ParseRetornoConsulta handles all bank quirks
             var sb = new System.Text.StringBuilder();
             sb.AppendLine("[REGISTRO1]");
-            foreach (var kv in reg)  sb.AppendLine($"{kv.Key}={kv.Value}");
+            foreach (var kv in reg) sb.AppendLine($"{kv.Key}={kv.Value}");
             if (tit != null)
             {
                 sb.AppendLine("[TITULORETORNO1]");
@@ -677,12 +677,12 @@ internal static class StxSerializer
             var d = ParseRetornoConsulta(sb.ToString());
             items.Add(new ConsultaListaItem
             {
-                nossoNumero    = d.NossoNumero,
-                situacao       = d.Situacao,
-                pago           = d.Pago,
-                dataPagamento  = d.DataPagamento,
-                valorPago      = d.ValorPago,
-                codigoBarras   = d.CodigoBarras,
+                nossoNumero = d.NossoNumero,
+                situacao = d.Situacao,
+                pago = d.Pago,
+                dataPagamento = d.DataPagamento,
+                valorPago = d.ValorPago,
+                codigoBarras = d.CodigoBarras,
                 linhaDigitavel = d.LinhaDigitavel,
             });
             n++;
@@ -695,7 +695,7 @@ internal static class StxSerializer
 
     private static Dictionary<string, Dictionary<string, string>> ParseIni(string conteudo)
     {
-        var result  = new Dictionary<string, Dictionary<string, string>>(StringComparer.OrdinalIgnoreCase);
+        var result = new Dictionary<string, Dictionary<string, string>>(StringComparer.OrdinalIgnoreCase);
         string? sec = null;
 
         foreach (var rawLine in conteudo.Split('\n'))
@@ -776,7 +776,7 @@ internal static class StxSerializer
         var s = sb.ToString().Replace("-", "");
         if (s.Length == 0) return string.Empty;
 
-        int lastDot   = s.LastIndexOf('.');
+        int lastDot = s.LastIndexOf('.');
         int lastComma = s.LastIndexOf(',');
 
         string inteiro, fracao;
@@ -785,12 +785,12 @@ internal static class StxSerializer
             // Ambos presentes: o separador mais à direita é o decimal.
             int decPos = Math.Max(lastDot, lastComma);
             inteiro = s[..decPos];
-            fracao  = s[(decPos + 1)..];
+            fracao = s[(decPos + 1)..];
         }
         else if (lastDot >= 0 || lastComma >= 0)
         {
-            int sepPos      = Math.Max(lastDot, lastComma);
-            char sep        = s[sepPos];
+            int sepPos = Math.Max(lastDot, lastComma);
+            char sep = s[sepPos];
             int digitsAfter = s.Length - sepPos - 1;
             int ocorrencias = 0;
             foreach (var c in s) if (c == sep) ocorrencias++;
@@ -799,18 +799,18 @@ internal static class StxSerializer
             {
                 // Milhar: várias ocorrências ("1.234.567") ou um grupo de 3 dígitos ("1.250").
                 inteiro = s;
-                fracao  = string.Empty;
+                fracao = string.Empty;
             }
             else
             {
                 inteiro = s[..sepPos];
-                fracao  = s[(sepPos + 1)..];
+                fracao = s[(sepPos + 1)..];
             }
         }
         else
         {
             inteiro = s;
-            fracao  = string.Empty;
+            fracao = string.Empty;
         }
 
         // Remove qualquer separador de milhar remanescente da parte inteira.
@@ -840,16 +840,16 @@ internal static class StxSerializer
 
     private static void ValidarConfigPix(ConfigBoleto cfg)
     {
-        var pixOn    = cfg.indicadorpix > 0;
-        var temTipo  = cfg.tipochavepix > 0;
+        var pixOn = cfg.indicadorpix > 0;
+        var temTipo = cfg.tipochavepix > 0;
         var temChave = !string.IsNullOrWhiteSpace(cfg.chavepix) && cfg.chavepix.Trim() != "0";
 
         if (!pixOn && !temTipo && !temChave) return; // tudo desabilitado: ok
-        if (pixOn  &&  temTipo &&  temChave) return; // tudo habilitado: ok
+        if (pixOn && temTipo && temChave) return; // tudo habilitado: ok
 
         var problemas = new List<string>();
-        if (!pixOn)    problemas.Add($"indicadorpix={cfg.indicadorpix} (deve ser > 0)");
-        if (!temTipo)  problemas.Add($"tipochavepix={cfg.tipochavepix} (deve ser > 0)");
+        if (!pixOn) problemas.Add($"indicadorpix={cfg.indicadorpix} (deve ser > 0)");
+        if (!temTipo) problemas.Add($"tipochavepix={cfg.tipochavepix} (deve ser > 0)");
         if (!temChave) problemas.Add($"chavepix='{cfg.chavepix}' (deve ser uma chave PIX válida)");
 
         throw new ArgumentException(
@@ -879,52 +879,52 @@ internal static class StxSerializer
 
     public static string SerializarTitulo(Titulo t, Cliente cli, Unidade uni, ConfigBoleto cfg)
     {
-        int tipoDesc    = t.TipoDesconto     > 0 ? t.TipoDesconto     : cfg.tipodesconto;
-        int codJuros    = t.CodigoMoraJuros  > 0 ? t.CodigoMoraJuros  : cfg.codigomorajuros;
-        int codMulta    = t.CodigoMulta      > 0 ? t.CodigoMulta      : cfg.codigomulta;
-        int codNegativ  = t.CodigoNegativacao > 0 ? t.CodigoNegativacao : cfg.codigonegativacao;
-        var aceite      = cfg.aceite == 1 ? "A" : "N";
-        var especie     = string.IsNullOrWhiteSpace(cfg.especiedoc) ? "DM" : cfg.especiedoc;
+        int tipoDesc = t.TipoDesconto > 0 ? t.TipoDesconto : cfg.tipodesconto;
+        int codJuros = t.CodigoMoraJuros > 0 ? t.CodigoMoraJuros : cfg.codigomorajuros;
+        int codMulta = t.CodigoMulta > 0 ? t.CodigoMulta : cfg.codigomulta;
+        int codNegativ = t.CodigoNegativacao > 0 ? t.CodigoNegativacao : cfg.codigonegativacao;
+        var aceite = cfg.aceite == 1 ? "A" : "N";
+        var especie = string.IsNullOrWhiteSpace(cfg.especiedoc) ? "DM" : cfg.especiedoc;
 
         var instrucoes = new[] { cfg.instrucao1, cfg.instrucao2 }
             .Where(x => x > 0).ToArray();
 
         var obj = new Dictionary<string, object?>
         {
-            ["NossoNumero"]       = t.nossonumero,
-            ["SeuNumero"]         = t.numerodocumento,
-            ["Carteira"]          = cfg.carteira,
-            ["ValorDocumento"]    = FormatDecimalJson(t.valordocumento),
-            ["DataVencimento"]    = NormalizarData(t.datavencimento),
-            ["DataDocumento"]     = NormalizarData(t.datadocumento),
+            ["NossoNumero"] = t.nossonumero,
+            ["SeuNumero"] = t.numerodocumento,
+            ["Carteira"] = cfg.carteira,
+            ["ValorDocumento"] = FormatDecimalJson(t.valordocumento),
+            ["DataVencimento"] = NormalizarData(t.datavencimento),
+            ["DataDocumento"] = NormalizarData(t.datadocumento),
             ["DataProcessamento"] = NormalizarData(t.dataprocessamento),
-            ["Especie"]           = especie,
-            ["Aceite"]            = aceite,
-            ["Desconto"]          = new { Tipo = tipoDesc,      Valor      = FormatDecimalJson(t.valordesconto) },
-            ["Juros"]             = new { Tipo = codJuros,     Valor      = FormatDecimalJson(t.valormorajuros) },
-            ["Multa"]             = new { Tipo = codMulta,     Percentual = FormatDecimalJson(t.percentualmulta) },
-            ["Negativacao"]       = new { Tipo = codNegativ },
-            ["Instrucoes"]        = instrucoes,
-            ["Sacado"]  = new
+            ["Especie"] = especie,
+            ["Aceite"] = aceite,
+            ["Desconto"] = new { Tipo = tipoDesc, Valor = FormatDecimalJson(t.valordesconto) },
+            ["Juros"] = new { Tipo = codJuros, Valor = FormatDecimalJson(t.valormorajuros) },
+            ["Multa"] = new { Tipo = codMulta, Percentual = FormatDecimalJson(t.percentualmulta) },
+            ["Negativacao"] = new { Tipo = codNegativ },
+            ["Instrucoes"] = instrucoes,
+            ["Sacado"] = new
             {
-                Nome        = cli.nome,
-                CPFCNPJ     = cli.cpfcnpj,
-                Pessoa      = cli.tipo == 1 ? "J" : "F",
-                Logradouro  = cli.logradouro,
-                Numero      = cli.numero,
+                Nome = cli.nome,
+                CPFCNPJ = cli.cpfcnpj,
+                Pessoa = cli.tipo == 1 ? "J" : "F",
+                Logradouro = cli.logradouro,
+                Numero = cli.numero,
                 Complemento = cli.complemento,
-                Bairro      = cli.bairro,
-                Cidade      = cli.cidade,
-                UF          = cli.uf,
-                CEP         = cli.cep,
-                Email       = cli.email,
+                Bairro = cli.bairro,
+                Cidade = cli.cidade,
+                UF = cli.uf,
+                CEP = cli.cep,
+                Email = cli.email,
             },
             ["Cedente"] = new
             {
-                Nome    = uni.nome,
+                Nome = uni.nome,
                 CPFCNPJ = uni.cpfcnpj,
-                Cidade  = uni.cidade,
-                UF      = uni.uf,
+                Cidade = uni.cidade,
+                UF = uni.uf,
             },
         };
 
@@ -938,14 +938,14 @@ internal static class StxSerializer
         if (string.IsNullOrWhiteSpace(json)) return;
         try
         {
-            var doc  = JsonDocument.Parse(json);
+            var doc = JsonDocument.Parse(json);
             var root = doc.RootElement;
 
-            r.UrlBoleto      = GetJson(root, "urlBoleto")      ?? r.UrlBoleto;
-            r.IdBanco        = GetJson(root, "idTitulo")        ?? r.IdBanco;
-            r.CodigoBarras   = GetJson(root, "codigoBarras")    ?? r.CodigoBarras;
-            r.LinhaDigitavel = GetJson(root, "linhaDigitavel")  ?? r.LinhaDigitavel;
-            r.NossoNumero    = GetJson(root, "nossoNumero")     ?? r.NossoNumero;
+            r.UrlBoleto = GetJson(root, "urlBoleto") ?? r.UrlBoleto;
+            r.IdBanco = GetJson(root, "idTitulo") ?? r.IdBanco;
+            r.CodigoBarras = GetJson(root, "codigoBarras") ?? r.CodigoBarras;
+            r.LinhaDigitavel = GetJson(root, "linhaDigitavel") ?? r.LinhaDigitavel;
+            r.NossoNumero = GetJson(root, "nossoNumero") ?? r.NossoNumero;
         }
         catch (JsonException) { }
     }

@@ -35,126 +35,126 @@ internal sealed class AcbrLibHandle : IDisposable
 
     // ── Delegates — um por função exportada ──────────────────────────
     // Ciclo de vida
-    [UnmanagedFunctionPointer(CC, CharSet=CS)] delegate int D_Inicializar(ref IntPtr handle, string eArqConfig, string eChaveCrypt);
-    [UnmanagedFunctionPointer(CC)]             delegate int D_Finalizar(IntPtr handle);
+    [UnmanagedFunctionPointer(CC, CharSet = CS)] delegate int D_Inicializar(ref IntPtr handle, string eArqConfig, string eChaveCrypt);
+    [UnmanagedFunctionPointer(CC)] delegate int D_Finalizar(IntPtr handle);
 
     // Informações
-    [UnmanagedFunctionPointer(CC, CharSet=CS)] delegate int D_Nome(IntPtr handle, StringBuilder sb, ref int len);
-    [UnmanagedFunctionPointer(CC, CharSet=CS)] delegate int D_Versao(IntPtr handle, StringBuilder sb, ref int len);
-    [UnmanagedFunctionPointer(CC, CharSet=CS)] delegate int D_UltimoRetorno(IntPtr handle, StringBuilder sb, ref int len);
-    [UnmanagedFunctionPointer(CC, CharSet=CS)] delegate int D_OpenSSLInfo(IntPtr handle, StringBuilder sb, ref int len);
+    [UnmanagedFunctionPointer(CC, CharSet = CS)] delegate int D_Nome(IntPtr handle, StringBuilder sb, ref int len);
+    [UnmanagedFunctionPointer(CC, CharSet = CS)] delegate int D_Versao(IntPtr handle, StringBuilder sb, ref int len);
+    [UnmanagedFunctionPointer(CC, CharSet = CS)] delegate int D_UltimoRetorno(IntPtr handle, StringBuilder sb, ref int len);
+    [UnmanagedFunctionPointer(CC, CharSet = CS)] delegate int D_OpenSSLInfo(IntPtr handle, StringBuilder sb, ref int len);
 
     // Configuração (arquivo INI)
-    [UnmanagedFunctionPointer(CC, CharSet=CS)] delegate int D_ConfigLer(IntPtr handle, string eArqConfig);
-    [UnmanagedFunctionPointer(CC, CharSet=CS)] delegate int D_ConfigGravar(IntPtr handle, string eArqConfig);
-    [UnmanagedFunctionPointer(CC, CharSet=CS)] delegate int D_ConfigImportar(IntPtr handle, string eArqConfig);
-    [UnmanagedFunctionPointer(CC, CharSet=CS)] delegate int D_ConfigExportar(IntPtr handle, StringBuilder sb, ref int len);
-    [UnmanagedFunctionPointer(CC, CharSet=CS)] delegate int D_ConfigLerValor(IntPtr handle, string sessao, string chave, StringBuilder sb, ref int len);
-    [UnmanagedFunctionPointer(CC, CharSet=CS)] delegate int D_ConfigGravarValor(IntPtr handle, string sessao, string chave, string valor);
+    [UnmanagedFunctionPointer(CC, CharSet = CS)] delegate int D_ConfigLer(IntPtr handle, string eArqConfig);
+    [UnmanagedFunctionPointer(CC, CharSet = CS)] delegate int D_ConfigGravar(IntPtr handle, string eArqConfig);
+    [UnmanagedFunctionPointer(CC, CharSet = CS)] delegate int D_ConfigImportar(IntPtr handle, string eArqConfig);
+    [UnmanagedFunctionPointer(CC, CharSet = CS)] delegate int D_ConfigExportar(IntPtr handle, StringBuilder sb, ref int len);
+    [UnmanagedFunctionPointer(CC, CharSet = CS)] delegate int D_ConfigLerValor(IntPtr handle, string sessao, string chave, StringBuilder sb, ref int len);
+    [UnmanagedFunctionPointer(CC, CharSet = CS)] delegate int D_ConfigGravarValor(IntPtr handle, string sessao, string chave, string valor);
 
     // Cedente + banco (aceita path OU conteúdo do INI)
-    [UnmanagedFunctionPointer(CC, CharSet=CS)] delegate int D_ConfigurarDados(IntPtr handle, string eArquivoIni);
+    [UnmanagedFunctionPointer(CC, CharSet = CS)] delegate int D_ConfigurarDados(IntPtr handle, string eArquivoIni);
 
     // Títulos
-    [UnmanagedFunctionPointer(CC, CharSet=CS)] delegate int D_IncluirTitulos(IntPtr handle, string eArquivoIni, string eTpSaida);
-    [UnmanagedFunctionPointer(CC)]             delegate int D_LimparLista(IntPtr handle);
-    [UnmanagedFunctionPointer(CC)]             delegate int D_TotalTitulosLista(IntPtr handle);
+    [UnmanagedFunctionPointer(CC, CharSet = CS)] delegate int D_IncluirTitulos(IntPtr handle, string eArquivoIni, string eTpSaida);
+    [UnmanagedFunctionPointer(CC)] delegate int D_LimparLista(IntPtr handle);
+    [UnmanagedFunctionPointer(CC)] delegate int D_TotalTitulosLista(IntPtr handle);
 
     // Impressão / PDF
-    [UnmanagedFunctionPointer(CC, CharSet=CS)] delegate int D_Imprimir(IntPtr handle, string eNomeImpressora);
-    [UnmanagedFunctionPointer(CC, CharSet=CS)] delegate int D_ImprimirBoleto(IntPtr handle, int eIndice, string eNomeImpressora);
-    [UnmanagedFunctionPointer(CC)]             delegate int D_GerarPDF(IntPtr handle);
-    [UnmanagedFunctionPointer(CC, CharSet=CS)] delegate int D_SalvarPDF(IntPtr handle, StringBuilder sb, ref int len);
-    [UnmanagedFunctionPointer(CC)]             delegate int D_GerarPDFBoleto(IntPtr handle, int eIndice);
-    [UnmanagedFunctionPointer(CC, CharSet=CS)] delegate int D_SalvarPDFBoleto(IntPtr handle, int eIndice, StringBuilder sb, ref int len);
-    [UnmanagedFunctionPointer(CC)]             delegate int D_GerarHTML(IntPtr handle);
+    [UnmanagedFunctionPointer(CC, CharSet = CS)] delegate int D_Imprimir(IntPtr handle, string eNomeImpressora);
+    [UnmanagedFunctionPointer(CC, CharSet = CS)] delegate int D_ImprimirBoleto(IntPtr handle, int eIndice, string eNomeImpressora);
+    [UnmanagedFunctionPointer(CC)] delegate int D_GerarPDF(IntPtr handle);
+    [UnmanagedFunctionPointer(CC, CharSet = CS)] delegate int D_SalvarPDF(IntPtr handle, StringBuilder sb, ref int len);
+    [UnmanagedFunctionPointer(CC)] delegate int D_GerarPDFBoleto(IntPtr handle, int eIndice);
+    [UnmanagedFunctionPointer(CC, CharSet = CS)] delegate int D_SalvarPDFBoleto(IntPtr handle, int eIndice, StringBuilder sb, ref int len);
+    [UnmanagedFunctionPointer(CC)] delegate int D_GerarHTML(IntPtr handle);
 
     // CNAB
-    [UnmanagedFunctionPointer(CC, CharSet=CS)] delegate int D_GerarRemessa(IntPtr handle, string eDir, int eNumArquivo, string eNomeArq);
-    [UnmanagedFunctionPointer(CC, CharSet=CS)] delegate int D_GerarRemessaStream(IntPtr handle, int eNumArquivo, StringBuilder sb, ref int len);
-    [UnmanagedFunctionPointer(CC, CharSet=CS)] delegate int D_ObterRetorno(IntPtr handle, string eDir, string eNomeArq, StringBuilder sb, ref int len);
-    [UnmanagedFunctionPointer(CC, CharSet=CS)] delegate int D_LerRetorno(IntPtr handle, string eDir, string eNomeArq);
-    [UnmanagedFunctionPointer(CC, CharSet=CS)] delegate int D_LerRetornoStream(IntPtr handle, string aRetornoBase64, StringBuilder sb, ref int len);
+    [UnmanagedFunctionPointer(CC, CharSet = CS)] delegate int D_GerarRemessa(IntPtr handle, string eDir, int eNumArquivo, string eNomeArq);
+    [UnmanagedFunctionPointer(CC, CharSet = CS)] delegate int D_GerarRemessaStream(IntPtr handle, int eNumArquivo, StringBuilder sb, ref int len);
+    [UnmanagedFunctionPointer(CC, CharSet = CS)] delegate int D_ObterRetorno(IntPtr handle, string eDir, string eNomeArq, StringBuilder sb, ref int len);
+    [UnmanagedFunctionPointer(CC, CharSet = CS)] delegate int D_LerRetorno(IntPtr handle, string eDir, string eNomeArq);
+    [UnmanagedFunctionPointer(CC, CharSet = CS)] delegate int D_LerRetornoStream(IntPtr handle, string aRetornoBase64, StringBuilder sb, ref int len);
 
     // E-mail
-    [UnmanagedFunctionPointer(CC, CharSet=CS)] delegate int D_EnviarEmail(IntPtr handle, string ePara, string eAssunto, string eMensagem, string eCC);
-    [UnmanagedFunctionPointer(CC, CharSet=CS)] delegate int D_EnviarEmailBoleto(IntPtr handle, int eIndice, string ePara, string eAssunto, string eMensagem, string eCC);
+    [UnmanagedFunctionPointer(CC, CharSet = CS)] delegate int D_EnviarEmail(IntPtr handle, string ePara, string eAssunto, string eMensagem, string eCC);
+    [UnmanagedFunctionPointer(CC, CharSet = CS)] delegate int D_EnviarEmailBoleto(IntPtr handle, int eIndice, string ePara, string eAssunto, string eMensagem, string eCC);
 
     // Diretório / arquivo
-    [UnmanagedFunctionPointer(CC, CharSet=CS)] delegate int D_SetDiretorioArquivo(IntPtr handle, string eDir, string eArq);
+    [UnmanagedFunctionPointer(CC, CharSet = CS)] delegate int D_SetDiretorioArquivo(IntPtr handle, string eDir, string eArq);
 
     // Utilitários
-    [UnmanagedFunctionPointer(CC, CharSet=CS)] delegate int D_ListaBancos(IntPtr handle, StringBuilder sb, ref int len);
-    [UnmanagedFunctionPointer(CC, CharSet=CS)] delegate int D_ListaCaractTitulo(IntPtr handle, StringBuilder sb, ref int len);
-    [UnmanagedFunctionPointer(CC, CharSet=CS)] delegate int D_ListaOcorrencias(IntPtr handle, StringBuilder sb, ref int len);
-    [UnmanagedFunctionPointer(CC, CharSet=CS)] delegate int D_ListaOcorrenciasEX(IntPtr handle, StringBuilder sb, ref int len);
-    [UnmanagedFunctionPointer(CC, CharSet=CS)] delegate int D_CodigosMoraAceitos(IntPtr handle, StringBuilder sb, ref int len);
-    [UnmanagedFunctionPointer(CC, CharSet=CS)] delegate int D_SelecionaBanco(IntPtr handle, string eCodBanco);
-    [UnmanagedFunctionPointer(CC, CharSet=CS)] delegate int D_TamNossoNumero(IntPtr handle, string eCarteira, string eNossoNumero, string eConvenio);
-    [UnmanagedFunctionPointer(CC, CharSet=CS)] delegate int D_MontarNossoNumero(IntPtr handle, int eIndice, StringBuilder sb, ref int len);
-    [UnmanagedFunctionPointer(CC, CharSet=CS)] delegate int D_RetornaLinhaDigitavel(IntPtr handle, int eIndice, StringBuilder sb, ref int len);
-    [UnmanagedFunctionPointer(CC, CharSet=CS)] delegate int D_RetornaCodigoBarras(IntPtr handle, int eIndice, StringBuilder sb, ref int len);
+    [UnmanagedFunctionPointer(CC, CharSet = CS)] delegate int D_ListaBancos(IntPtr handle, StringBuilder sb, ref int len);
+    [UnmanagedFunctionPointer(CC, CharSet = CS)] delegate int D_ListaCaractTitulo(IntPtr handle, StringBuilder sb, ref int len);
+    [UnmanagedFunctionPointer(CC, CharSet = CS)] delegate int D_ListaOcorrencias(IntPtr handle, StringBuilder sb, ref int len);
+    [UnmanagedFunctionPointer(CC, CharSet = CS)] delegate int D_ListaOcorrenciasEX(IntPtr handle, StringBuilder sb, ref int len);
+    [UnmanagedFunctionPointer(CC, CharSet = CS)] delegate int D_CodigosMoraAceitos(IntPtr handle, StringBuilder sb, ref int len);
+    [UnmanagedFunctionPointer(CC, CharSet = CS)] delegate int D_SelecionaBanco(IntPtr handle, string eCodBanco);
+    [UnmanagedFunctionPointer(CC, CharSet = CS)] delegate int D_TamNossoNumero(IntPtr handle, string eCarteira, string eNossoNumero, string eConvenio);
+    [UnmanagedFunctionPointer(CC, CharSet = CS)] delegate int D_MontarNossoNumero(IntPtr handle, int eIndice, StringBuilder sb, ref int len);
+    [UnmanagedFunctionPointer(CC, CharSet = CS)] delegate int D_RetornaLinhaDigitavel(IntPtr handle, int eIndice, StringBuilder sb, ref int len);
+    [UnmanagedFunctionPointer(CC, CharSet = CS)] delegate int D_RetornaCodigoBarras(IntPtr handle, int eIndice, StringBuilder sb, ref int len);
 
     // WebService (operação única — código define a operação)
-    [UnmanagedFunctionPointer(CC, CharSet=CS)] delegate int D_EnviarBoleto(IntPtr handle, int eCodigoOperacao, StringBuilder sb, ref int len);
-    [UnmanagedFunctionPointer(CC, CharSet=CS)] delegate int D_ConsultarTitulosPorPeriodo(IntPtr handle, string eArquivoIni, StringBuilder sb, ref int len);
+    [UnmanagedFunctionPointer(CC, CharSet = CS)] delegate int D_EnviarBoleto(IntPtr handle, int eCodigoOperacao, StringBuilder sb, ref int len);
+    [UnmanagedFunctionPointer(CC, CharSet = CS)] delegate int D_ConsultarTitulosPorPeriodo(IntPtr handle, string eArquivoIni, StringBuilder sb, ref int len);
 
     // Token
-    [UnmanagedFunctionPointer(CC, CharSet=CS)] delegate int D_GerarToken(IntPtr handle, StringBuilder sb, ref int len);
-    [UnmanagedFunctionPointer(CC, CharSet=CS)] delegate int D_InformarToken(IntPtr handle, string eToken, double eDataValidade);
+    [UnmanagedFunctionPointer(CC, CharSet = CS)] delegate int D_GerarToken(IntPtr handle, StringBuilder sb, ref int len);
+    [UnmanagedFunctionPointer(CC, CharSet = CS)] delegate int D_InformarToken(IntPtr handle, string eToken, double eDataValidade);
 
     // ── Instâncias dos delegates ──────────────────────────────────────
-    private D_Inicializar              _inicializar           = null!;
-    private D_Finalizar                _finalizar             = null!;
-    private D_Nome                     _nome                  = null!;
-    private D_Versao                   _versao                = null!;
-    private D_UltimoRetorno            _ultimoRetorno         = null!;
-    private D_OpenSSLInfo              _openSSLInfo           = null!;
-    private D_ConfigLer                _configLer             = null!;
-    private D_ConfigGravar             _configGravar          = null!;
-    private D_ConfigImportar           _configImportar        = null!;
-    private D_ConfigExportar           _configExportar        = null!;
-    private D_ConfigLerValor           _configLerValor        = null!;
-    private D_ConfigGravarValor        _configGravarValor     = null!;
-    private D_ConfigurarDados          _configurarDados       = null!;
-    private D_IncluirTitulos           _incluirTitulos        = null!;
-    private D_LimparLista              _limparLista           = null!;
-    private D_TotalTitulosLista        _totalTitulosLista     = null!;
-    private D_Imprimir                 _imprimir              = null!;
-    private D_ImprimirBoleto           _imprimirBoleto        = null!;
-    private D_GerarPDF                 _gerarPDF              = null!;
-    private D_SalvarPDF                _salvarPDF             = null!;
-    private D_GerarPDFBoleto           _gerarPDFBoleto        = null!;
-    private D_SalvarPDFBoleto          _salvarPDFBoleto       = null!;
-    private D_GerarHTML                _gerarHTML             = null!;
-    private D_GerarRemessa             _gerarRemessa          = null!;
-    private D_GerarRemessaStream       _gerarRemessaStream    = null!;
-    private D_ObterRetorno             _obterRetorno          = null!;
-    private D_LerRetorno               _lerRetorno            = null!;
-    private D_LerRetornoStream         _lerRetornoStream      = null!;
-    private D_EnviarEmail              _enviarEmail           = null!;
-    private D_EnviarEmailBoleto        _enviarEmailBoleto     = null!;
-    private D_SetDiretorioArquivo      _setDiretorioArquivo   = null!;
-    private D_ListaBancos              _listaBancos           = null!;
-    private D_ListaCaractTitulo        _listaCaractTitulo     = null!;
-    private D_ListaOcorrencias         _listaOcorrencias      = null!;
-    private D_ListaOcorrenciasEX       _listaOcorrenciasEX    = null!;
-    private D_CodigosMoraAceitos       _codigosMoraAceitos    = null!;
-    private D_SelecionaBanco           _selecionaBanco        = null!;
-    private D_TamNossoNumero           _tamNossoNumero        = null!;
-    private D_MontarNossoNumero        _montarNossoNumero     = null!;
-    private D_RetornaLinhaDigitavel    _retornaLinhaDigitavel = null!;
-    private D_RetornaCodigoBarras      _retornaCodigoBarras   = null!;
-    private D_EnviarBoleto             _enviarBoleto          = null!;
-    private D_ConsultarTitulosPorPeriodo _consultarPeriodo    = null!;
-    private D_GerarToken               _gerarToken            = null!;
-    private D_InformarToken            _informarToken         = null!;
+    private D_Inicializar _inicializar = null!;
+    private D_Finalizar _finalizar = null!;
+    private D_Nome _nome = null!;
+    private D_Versao _versao = null!;
+    private D_UltimoRetorno _ultimoRetorno = null!;
+    private D_OpenSSLInfo _openSSLInfo = null!;
+    private D_ConfigLer _configLer = null!;
+    private D_ConfigGravar _configGravar = null!;
+    private D_ConfigImportar _configImportar = null!;
+    private D_ConfigExportar _configExportar = null!;
+    private D_ConfigLerValor _configLerValor = null!;
+    private D_ConfigGravarValor _configGravarValor = null!;
+    private D_ConfigurarDados _configurarDados = null!;
+    private D_IncluirTitulos _incluirTitulos = null!;
+    private D_LimparLista _limparLista = null!;
+    private D_TotalTitulosLista _totalTitulosLista = null!;
+    private D_Imprimir _imprimir = null!;
+    private D_ImprimirBoleto _imprimirBoleto = null!;
+    private D_GerarPDF _gerarPDF = null!;
+    private D_SalvarPDF _salvarPDF = null!;
+    private D_GerarPDFBoleto _gerarPDFBoleto = null!;
+    private D_SalvarPDFBoleto _salvarPDFBoleto = null!;
+    private D_GerarHTML _gerarHTML = null!;
+    private D_GerarRemessa _gerarRemessa = null!;
+    private D_GerarRemessaStream _gerarRemessaStream = null!;
+    private D_ObterRetorno _obterRetorno = null!;
+    private D_LerRetorno _lerRetorno = null!;
+    private D_LerRetornoStream _lerRetornoStream = null!;
+    private D_EnviarEmail _enviarEmail = null!;
+    private D_EnviarEmailBoleto _enviarEmailBoleto = null!;
+    private D_SetDiretorioArquivo _setDiretorioArquivo = null!;
+    private D_ListaBancos _listaBancos = null!;
+    private D_ListaCaractTitulo _listaCaractTitulo = null!;
+    private D_ListaOcorrencias _listaOcorrencias = null!;
+    private D_ListaOcorrenciasEX _listaOcorrenciasEX = null!;
+    private D_CodigosMoraAceitos _codigosMoraAceitos = null!;
+    private D_SelecionaBanco _selecionaBanco = null!;
+    private D_TamNossoNumero _tamNossoNumero = null!;
+    private D_MontarNossoNumero _montarNossoNumero = null!;
+    private D_RetornaLinhaDigitavel _retornaLinhaDigitavel = null!;
+    private D_RetornaCodigoBarras _retornaCodigoBarras = null!;
+    private D_EnviarBoleto _enviarBoleto = null!;
+    private D_ConsultarTitulosPorPeriodo _consultarPeriodo = null!;
+    private D_GerarToken _gerarToken = null!;
+    private D_InformarToken _informarToken = null!;
 
     // ── Estado ────────────────────────────────────────────────────────
     private IntPtr _hLib;
     private IntPtr _libHandle;
-    private bool   _inicializado;
-    private bool   _disposed;
+    private bool _inicializado;
+    private bool _disposed;
 
     // Caminho do cedente_{slot}.ini gravado pelo pool — reutilizado antes de cada IncluirTitulos.
     internal string CedentePath { get; set; } = string.Empty;
@@ -163,9 +163,9 @@ internal sealed class AcbrLibHandle : IDisposable
     // O handle é AFFINE a uma configuração: fica vinculado ao hash/ id de credenciais
     // pelos quais foi inicializado (token OAuth nativo continua quente). O pool global
     // reusa um handle ocioso só quando o hash bate; nunca reconfigura para outro banco.
-    internal string   ConfigHash { get; set; } = string.Empty;
-    internal int      ConfigId   { get; set; }
-    internal DateTime LastUsed   { get; set; } = DateTime.UtcNow;
+    internal string ConfigHash { get; set; } = string.Empty;
+    internal int ConfigId { get; set; }
+    internal DateTime LastUsed { get; set; } = DateTime.UtcNow;
 
     /// <summary>
     /// True quando uma operação NATIVA com estado (WS/config/lista/títulos) falhou.
@@ -264,8 +264,8 @@ internal sealed class AcbrLibHandle : IDisposable
 
     // ── Configuração ──────────────────────────────────────────────────
 
-    public void ConfigLer(string iniPath)      => Check(_configLer(_libHandle, iniPath),    "Boleto_ConfigLer");
-    public void ConfigGravar(string iniPath)   => Check(_configGravar(_libHandle, iniPath), "Boleto_ConfigGravar");
+    public void ConfigLer(string iniPath) => Check(_configLer(_libHandle, iniPath), "Boleto_ConfigLer");
+    public void ConfigGravar(string iniPath) => Check(_configGravar(_libHandle, iniPath), "Boleto_ConfigGravar");
     public void ConfigImportar(string conteudo) => Stateful(() => Check(_configImportar(_libHandle, conteudo), "Boleto_ConfigImportar"));
 
     public string ConfigExportar()
@@ -541,7 +541,7 @@ internal sealed class AcbrLibHandle : IDisposable
     private string LerInterno(RefIntFunc fn, int tamanhoInicial = SmallBuf)
     {
         int len = tamanhoInicial;
-        var sb  = new StringBuilder(len);
+        var sb = new StringBuilder(len);
         fn(sb, ref len);
         if (len > tamanhoInicial)
         {
@@ -555,7 +555,7 @@ internal sealed class AcbrLibHandle : IDisposable
     private string Ler(RefIntFunc fn, string op, int tamanhoInicial = SmallBuf)
     {
         int len = tamanhoInicial;
-        var sb  = new StringBuilder(len);
+        var sb = new StringBuilder(len);
         int ret = fn(sb, ref len);
         Check(ret, op);
         if (len > tamanhoInicial)
@@ -571,7 +571,7 @@ internal sealed class AcbrLibHandle : IDisposable
     private string LerBase64(RefIntFunc fn, string op, int tamanhoInicial = SmallBuf)
     {
         int len = tamanhoInicial;
-        var sb  = new StringBuilder(len);
+        var sb = new StringBuilder(len);
         int ret = fn(sb, ref len);
         Check(ret, op);
         if (len > tamanhoInicial)
@@ -611,51 +611,51 @@ internal sealed class AcbrLibHandle : IDisposable
 
     private void BindDelegates()
     {
-        _inicializar           = Bind<D_Inicializar>           ("Boleto_Inicializar");
-        _finalizar             = Bind<D_Finalizar>             ("Boleto_Finalizar");
-        _nome                  = Bind<D_Nome>                  ("Boleto_Nome");
-        _versao                = Bind<D_Versao>                ("Boleto_Versao");
-        _ultimoRetorno         = Bind<D_UltimoRetorno>         ("Boleto_UltimoRetorno");
-        _openSSLInfo           = Bind<D_OpenSSLInfo>           ("Boleto_OpenSSLInfo");
-        _configLer             = Bind<D_ConfigLer>             ("Boleto_ConfigLer");
-        _configGravar          = Bind<D_ConfigGravar>          ("Boleto_ConfigGravar");
-        _configImportar        = Bind<D_ConfigImportar>        ("Boleto_ConfigImportar");
-        _configExportar        = Bind<D_ConfigExportar>        ("Boleto_ConfigExportar");
-        _configLerValor        = Bind<D_ConfigLerValor>        ("Boleto_ConfigLerValor");
-        _configGravarValor     = Bind<D_ConfigGravarValor>     ("Boleto_ConfigGravarValor");
-        _configurarDados       = Bind<D_ConfigurarDados>       ("Boleto_ConfigurarDados");
-        _incluirTitulos        = Bind<D_IncluirTitulos>        ("Boleto_IncluirTitulos");
-        _limparLista           = Bind<D_LimparLista>           ("Boleto_LimparLista");
-        _totalTitulosLista     = Bind<D_TotalTitulosLista>     ("Boleto_TotalTitulosLista");
-        _imprimir              = Bind<D_Imprimir>              ("Boleto_Imprimir");
-        _imprimirBoleto        = Bind<D_ImprimirBoleto>        ("Boleto_ImprimirBoleto");
-        _gerarPDF              = Bind<D_GerarPDF>              ("Boleto_GerarPDF");
-        _salvarPDF             = Bind<D_SalvarPDF>             ("Boleto_SalvarPDF");
-        _gerarPDFBoleto        = Bind<D_GerarPDFBoleto>        ("Boleto_GerarPDFBoleto");
-        _salvarPDFBoleto       = Bind<D_SalvarPDFBoleto>       ("Boleto_SalvarPDFBoleto");
-        _gerarHTML             = Bind<D_GerarHTML>             ("Boleto_GerarHTML");
-        _gerarRemessa          = Bind<D_GerarRemessa>          ("Boleto_GerarRemessa");
-        _gerarRemessaStream    = Bind<D_GerarRemessaStream>    ("Boleto_GerarRemessaStream");
-        _obterRetorno          = Bind<D_ObterRetorno>          ("Boleto_ObterRetorno");
-        _lerRetorno            = Bind<D_LerRetorno>            ("Boleto_LerRetorno");
-        _lerRetornoStream      = Bind<D_LerRetornoStream>      ("Boleto_LerRetornoStream");
-        _enviarEmail           = Bind<D_EnviarEmail>           ("Boleto_EnviarEmail");
-        _enviarEmailBoleto     = Bind<D_EnviarEmailBoleto>     ("Boleto_EnviarEmailBoleto");
-        _setDiretorioArquivo   = Bind<D_SetDiretorioArquivo>   ("Boleto_SetDiretorioArquivo");
-        _listaBancos           = Bind<D_ListaBancos>           ("Boleto_ListaBancos");
-        _listaCaractTitulo     = Bind<D_ListaCaractTitulo>     ("Boleto_ListaCaractTitulo");
-        _listaOcorrencias      = Bind<D_ListaOcorrencias>      ("Boleto_ListaOcorrencias");
-        _listaOcorrenciasEX    = Bind<D_ListaOcorrenciasEX>    ("Boleto_ListaOcorrenciasEX");
-        _codigosMoraAceitos    = Bind<D_CodigosMoraAceitos>    ("Boleto_CodigosMoraAceitos");
-        _selecionaBanco        = Bind<D_SelecionaBanco>        ("Boleto_SelecionaBanco");
-        _tamNossoNumero        = Bind<D_TamNossoNumero>        ("Boleto_TamNossoNumero");
-        _montarNossoNumero     = Bind<D_MontarNossoNumero>     ("Boleto_MontarNossoNumero");
-        _retornaLinhaDigitavel = Bind<D_RetornaLinhaDigitavel> ("Boleto_RetornaLinhaDigitavel");
-        _retornaCodigoBarras   = Bind<D_RetornaCodigoBarras>   ("Boleto_RetornaCodigoBarras");
-        _enviarBoleto          = Bind<D_EnviarBoleto>          ("Boleto_EnviarBoleto");
-        _consultarPeriodo      = Bind<D_ConsultarTitulosPorPeriodo>("Boleto_ConsultarTitulosPorPeriodo");
-        _gerarToken            = Bind<D_GerarToken>            ("Boleto_GerarToken");
-        _informarToken         = Bind<D_InformarToken>         ("Boleto_InformarToken");
+        _inicializar = Bind<D_Inicializar>("Boleto_Inicializar");
+        _finalizar = Bind<D_Finalizar>("Boleto_Finalizar");
+        _nome = Bind<D_Nome>("Boleto_Nome");
+        _versao = Bind<D_Versao>("Boleto_Versao");
+        _ultimoRetorno = Bind<D_UltimoRetorno>("Boleto_UltimoRetorno");
+        _openSSLInfo = Bind<D_OpenSSLInfo>("Boleto_OpenSSLInfo");
+        _configLer = Bind<D_ConfigLer>("Boleto_ConfigLer");
+        _configGravar = Bind<D_ConfigGravar>("Boleto_ConfigGravar");
+        _configImportar = Bind<D_ConfigImportar>("Boleto_ConfigImportar");
+        _configExportar = Bind<D_ConfigExportar>("Boleto_ConfigExportar");
+        _configLerValor = Bind<D_ConfigLerValor>("Boleto_ConfigLerValor");
+        _configGravarValor = Bind<D_ConfigGravarValor>("Boleto_ConfigGravarValor");
+        _configurarDados = Bind<D_ConfigurarDados>("Boleto_ConfigurarDados");
+        _incluirTitulos = Bind<D_IncluirTitulos>("Boleto_IncluirTitulos");
+        _limparLista = Bind<D_LimparLista>("Boleto_LimparLista");
+        _totalTitulosLista = Bind<D_TotalTitulosLista>("Boleto_TotalTitulosLista");
+        _imprimir = Bind<D_Imprimir>("Boleto_Imprimir");
+        _imprimirBoleto = Bind<D_ImprimirBoleto>("Boleto_ImprimirBoleto");
+        _gerarPDF = Bind<D_GerarPDF>("Boleto_GerarPDF");
+        _salvarPDF = Bind<D_SalvarPDF>("Boleto_SalvarPDF");
+        _gerarPDFBoleto = Bind<D_GerarPDFBoleto>("Boleto_GerarPDFBoleto");
+        _salvarPDFBoleto = Bind<D_SalvarPDFBoleto>("Boleto_SalvarPDFBoleto");
+        _gerarHTML = Bind<D_GerarHTML>("Boleto_GerarHTML");
+        _gerarRemessa = Bind<D_GerarRemessa>("Boleto_GerarRemessa");
+        _gerarRemessaStream = Bind<D_GerarRemessaStream>("Boleto_GerarRemessaStream");
+        _obterRetorno = Bind<D_ObterRetorno>("Boleto_ObterRetorno");
+        _lerRetorno = Bind<D_LerRetorno>("Boleto_LerRetorno");
+        _lerRetornoStream = Bind<D_LerRetornoStream>("Boleto_LerRetornoStream");
+        _enviarEmail = Bind<D_EnviarEmail>("Boleto_EnviarEmail");
+        _enviarEmailBoleto = Bind<D_EnviarEmailBoleto>("Boleto_EnviarEmailBoleto");
+        _setDiretorioArquivo = Bind<D_SetDiretorioArquivo>("Boleto_SetDiretorioArquivo");
+        _listaBancos = Bind<D_ListaBancos>("Boleto_ListaBancos");
+        _listaCaractTitulo = Bind<D_ListaCaractTitulo>("Boleto_ListaCaractTitulo");
+        _listaOcorrencias = Bind<D_ListaOcorrencias>("Boleto_ListaOcorrencias");
+        _listaOcorrenciasEX = Bind<D_ListaOcorrenciasEX>("Boleto_ListaOcorrenciasEX");
+        _codigosMoraAceitos = Bind<D_CodigosMoraAceitos>("Boleto_CodigosMoraAceitos");
+        _selecionaBanco = Bind<D_SelecionaBanco>("Boleto_SelecionaBanco");
+        _tamNossoNumero = Bind<D_TamNossoNumero>("Boleto_TamNossoNumero");
+        _montarNossoNumero = Bind<D_MontarNossoNumero>("Boleto_MontarNossoNumero");
+        _retornaLinhaDigitavel = Bind<D_RetornaLinhaDigitavel>("Boleto_RetornaLinhaDigitavel");
+        _retornaCodigoBarras = Bind<D_RetornaCodigoBarras>("Boleto_RetornaCodigoBarras");
+        _enviarBoleto = Bind<D_EnviarBoleto>("Boleto_EnviarBoleto");
+        _consultarPeriodo = Bind<D_ConsultarTitulosPorPeriodo>("Boleto_ConsultarTitulosPorPeriodo");
+        _gerarToken = Bind<D_GerarToken>("Boleto_GerarToken");
+        _informarToken = Bind<D_InformarToken>("Boleto_InformarToken");
     }
 
     private TDelegate Bind<TDelegate>(string fn) where TDelegate : Delegate

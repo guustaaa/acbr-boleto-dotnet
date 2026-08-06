@@ -74,9 +74,9 @@ public class StxModelsTests
     // ── StxSerializer.NormalizarData ──────────────────────────────────────────
 
     [Theory]
-    [InlineData("2025-12-31",           "31/12/2025")]
-    [InlineData("2025-12-31T00:00:00",  "31/12/2025")]
-    [InlineData("31/12/2025",           "31/12/2025")]
+    [InlineData("2025-12-31", "31/12/2025")]
+    [InlineData("2025-12-31T00:00:00", "31/12/2025")]
+    [InlineData("31/12/2025", "31/12/2025")]
     public void NormalizarData_ConverteFormatos(string entrada, string esperado)
     {
         StxSerializer.NormalizarData(entrada).Should().Be(esperado);
@@ -239,7 +239,7 @@ public class StxModelsTests
     public void ConfigBoleto_Desserializa_DeJsonSnakeCase()
     {
         var json = """{ "id": 1, "ws_clientid": "ABC", "indicadorpix": 2 }""";
-        var obj  = JsonSerializer.Deserialize<ConfigBoleto>(json);
+        var obj = JsonSerializer.Deserialize<ConfigBoleto>(json);
         obj.Should().NotBeNull();
         obj!.id.Should().Be(1);
         obj.ws_clientid.Should().Be("ABC");
@@ -302,52 +302,52 @@ public class StxModelsTests
 
     internal static ConfigBoleto CriarConfigPix() => new()
     {
-        id             = 1,
-        codbanco       = 341,
-        agencia        = "1690",
-        conta          = "20579",
-        ws_clientid    = "CLIENT_ID",
-        ws_clientsecret= "CLIENT_SECRET",
+        id = 1,
+        codbanco = 341,
+        agencia = "1690",
+        conta = "20579",
+        ws_clientid = "CLIENT_ID",
+        ws_clientsecret = "CLIENT_SECRET",
         caminhoACBrLib = @"C:\ACBrLib\ACBrLibBoleto64.dll",
-        indicadorpix   = 1,
-        tipochavepix   = 5, // Aleatória
-        chavepix       = "65f8f5d0-987b-49d2-8236-1916623810c2",
-        pastaOutput    = @"C:\temp\boletos",
+        indicadorpix = 1,
+        tipochavepix = 5, // Aleatória
+        chavepix = "65f8f5d0-987b-49d2-8236-1916623810c2",
+        pastaOutput = @"C:\temp\boletos",
     };
 
     internal static ConfigBoleto CriarConfig() => new()
     {
-        id             = 1,
-        codbanco       = 341,
-        agencia        = "1690",
-        conta          = "20579",
-        ws_clientid    = "CLIENT_ID",
-        ws_clientsecret= "CLIENT_SECRET",
+        id = 1,
+        codbanco = 341,
+        agencia = "1690",
+        conta = "20579",
+        ws_clientid = "CLIENT_ID",
+        ws_clientsecret = "CLIENT_SECRET",
         caminhoACBrLib = @"C:\ACBrLib\ACBrLibBoleto64.dll",
     };
 
     internal static Titulo CriarTitulo() => new()
     {
-        id             = 10,
-        nossonumero    = "00001",
+        id = 10,
+        nossonumero = "00001",
         valordocumento = 250.00m,
         datavencimento = "2025-12-31",
     };
 
     internal static Cliente CriarCliente() => new()
     {
-        id      = 2,
-        nome    = "João Silva",
+        id = 2,
+        nome = "João Silva",
         cpfcnpj = "12345678901",
-        cep     = "01234-567",
+        cep = "01234-567",
     };
 
     internal static Unidade CriarUnidade() => new()
     {
-        id      = 3,
-        nome    = "Empresa Teste LTDA",
+        id = 3,
+        nome = "Empresa Teste LTDA",
         cpfcnpj = "12.345.678/0001-99",
-        cidade  = "São Paulo",
-        uf      = "SP",
+        cidade = "São Paulo",
+        uf = "SP",
     };
 }

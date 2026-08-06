@@ -72,7 +72,7 @@ public class PoolManagerEvictionTests : IDisposable
     public void Dispose_ComTimerAtivo_NaoLancaExcecao()
     {
         var pool = new PoolManager(NullLogger<PoolManager>.Instance);
-        var act  = () => pool.Dispose();
+        var act = () => pool.Dispose();
         act.Should().NotThrow();
     }
 
@@ -80,7 +80,7 @@ public class PoolManagerEvictionTests : IDisposable
     public void Dispose_DuasVezes_NaoLancaExcecao()
     {
         var pool = new PoolManager(NullLogger<PoolManager>.Instance);
-        var act  = () => { pool.Dispose(); pool.Dispose(); };
+        var act = () => { pool.Dispose(); pool.Dispose(); };
         act.Should().NotThrow();
     }
 

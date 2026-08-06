@@ -21,7 +21,7 @@ public sealed class AcbrLibLease : IDisposable
 
     internal AcbrLibLease(AcbrLibHandle handle, Action<AcbrLibLease> devolver)
     {
-        Handle   = handle;
+        Handle = handle;
         _devolver = devolver;
     }
 
@@ -52,9 +52,9 @@ public sealed class AcbrLibLease : IDisposable
 public sealed class PoolManager : IDisposable
 {
     private const int DefaultMaxHandles = 16;
-    private const int MaxAllowed        = 256;
+    private const int MaxAllowed = 256;
     private const int IdleEvictAfterMinutes = 10;
-    private const int DefaultWaitSec    = 30;
+    private const int DefaultWaitSec = 30;
 
     private readonly ILogger<PoolManager> _logger;
     private readonly int _maxHandles;
@@ -74,9 +74,9 @@ public sealed class PoolManager : IDisposable
 
     public PoolManager(ILogger<PoolManager> logger)
     {
-        _logger     = logger ?? throw new ArgumentNullException(nameof(logger));
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _maxHandles = LerMaxHandles(logger);
-        _sem        = new SemaphoreSlim(_maxHandles, _maxHandles);
+        _sem = new SemaphoreSlim(_maxHandles, _maxHandles);
         _evictTimer = new Timer(EvictIdleHandles, null,
             TimeSpan.FromMinutes(5), TimeSpan.FromMinutes(5));
 
@@ -105,7 +105,7 @@ public sealed class PoolManager : IDisposable
         ObjectDisposedException.ThrowIf(_disposed, this);
         ValidarConfig(cfg);
 
-        var hash    = cfg.ComputarHash();
+        var hash = cfg.ComputarHash();
         var waitSec = cfg.poolWaitTimeoutSec > 0 ? cfg.poolWaitTimeoutSec : DefaultWaitSec;
         var timeout = TimeSpan.FromSeconds(waitSec);
 
@@ -279,14 +279,14 @@ public sealed class PoolManager : IDisposable
 
     private AcbrLibHandle CriarInstancia(ConfigBoleto cfg, string hash)
     {
-        var slot        = Interlocked.Increment(ref _slotSeq);
+        var slot = Interlocked.Increment(ref _slotSeq);
         var instanceDir = Path.Combine(_baseDir, cfg.id.ToString(), Guid.NewGuid().ToString("N"));
 
-        var iniPath     = GerarIniTemp(cfg, instanceDir, slot, out var pastaLog, out var logFile);
-        var diagPath    = Path.Combine(pastaLog, $"cfg{cfg.id}_{slot}_acbr_{DateTime.Today:yyyyMMdd}.log");
+        var iniPath = GerarIniTemp(cfg, instanceDir, slot, out var pastaLog, out var logFile);
+        var diagPath = Path.Combine(pastaLog, $"cfg{cfg.id}_{slot}_acbr_{DateTime.Today:yyyyMMdd}.log");
         var iniConteudo = File.ReadAllText(iniPath);
 
-        var cedenteIni  = StxSerializer.GerarCedenteIniMinimal(cfg);
+        var cedenteIni = StxSerializer.GerarCedenteIniMinimal(cfg);
         var cedentePath = Path.Combine(instanceDir, $"cedente_{slot}.ini");
         File.WriteAllText(cedentePath, cedenteIni);
         var cedenteConteudo = File.ReadAllText(cedentePath);
@@ -298,19 +298,19 @@ public sealed class PoolManager : IDisposable
         var handle = new AcbrLibHandle(cfg.caminhoACBrLib)
         {
             CedentePath = cedentePath,
-            ConfigHash  = hash,
-            ConfigId    = cfg.id,
-            LastUsed    = DateTime.UtcNow,
+            ConfigHash = hash,
+            ConfigId = cfg.id,
+            LastUsed = DateTime.UtcNow,
         };
         handle.Inicializar(iniPath);
 
         var urInit = TentarLerValor(() => handle.UltimoRetorno(), "UltimoRetorno-PosInit");
-        var versao = TentarLerValor(() => handle.Versao(),        "Versao");
+        var versao = TentarLerValor(() => handle.Versao(), "Versao");
         AcbrLog(diagPath, $"UltimoRetorno pós-Inicializar: '{urInit}'");
         AcbrLog(diagPath, $"Versao={versao}");
 
         TentarGravarValor(handle, diagPath, "Principal", "LogNivel", cfg.nivelLog.ToString());
-        TentarGravarValor(handle, diagPath, "Principal", "LogPath",  logFile);
+        TentarGravarValor(handle, diagPath, "Principal", "LogPath", logFile);
 
         AcbrLog(diagPath, $"=== CONFIGURAR_DADOS === cedentePath={cedentePath}\r\n{cedenteConteudo}");
 
@@ -342,7 +342,7 @@ public sealed class PoolManager : IDisposable
 
     private string GerarIniTemp(ConfigBoleto cfg, string instanceDir, int slot, out string pastaLog, out string logFile)
     {
-        pastaLog        = Path.GetFullPath(cfg.pastaLog);
+        pastaLog = Path.GetFullPath(cfg.pastaLog);
         var pastaOutput = Path.GetFullPath(cfg.pastaOutput);
 
         Directory.CreateDirectory(instanceDir);
@@ -369,7 +369,7 @@ public sealed class PoolManager : IDisposable
 
     private static string TentarLerValor(Func<string> fn, string nome)
     {
-        try   { return fn(); }
+        try { return fn(); }
         catch (Exception ex) { return $"[ERRO {nome}: {ex.Message}]"; }
     }
 
@@ -408,39 +408,39 @@ public sealed class PoolManager : IDisposable
         var erros = new List<string>();
 
         // Normaliza campos opcionais que GeneXus envia como 0/"" quando não mapeados na tabela
-        if (cfg.poolWaitTimeoutSec == 0)                        cfg.poolWaitTimeoutSec = DefaultWaitSec;
-        if (cfg.nivelLog           == 0)                        cfg.nivelLog           = 1;
+        if (cfg.poolWaitTimeoutSec == 0) cfg.poolWaitTimeoutSec = DefaultWaitSec;
+        if (cfg.nivelLog == 0) cfg.nivelLog = 1;
 
         // Caminhos: o valor da config tem prioridade; em branco herda o default do container
         // (variável de ambiente). Assim "igual na maioria das configs" vira um default de
         // ambiente, e o campo só é preenchido na config quando se quer sobrescrever uma específica.
-        cfg.pastaLog       = ResolverCaminho(cfg.pastaLog,       "ACBR_LOG_DIR",    Path.Combine(Path.GetTempPath(), "acbr_boleto", "logs"));
-        cfg.pastaOutput    = ResolverCaminho(cfg.pastaOutput,    "ACBR_OUTPUT_DIR", Path.Combine(Path.GetTempPath(), "acbr_boleto", "output"));
+        cfg.pastaLog = ResolverCaminho(cfg.pastaLog, "ACBR_LOG_DIR", Path.Combine(Path.GetTempPath(), "acbr_boleto", "logs"));
+        cfg.pastaOutput = ResolverCaminho(cfg.pastaOutput, "ACBR_OUTPUT_DIR", Path.Combine(Path.GetTempPath(), "acbr_boleto", "output"));
         // Pasta de logotipos: compartilhada por todas as configs (default de container).
         // Sem fallback: em branco, a linha DirLogo é omitida do INI e o DLL usa seu próprio lookup.
-        cfg.dirLogo        = ResolverCaminho(cfg.dirLogo,        "ACBR_LOGO_DIR");
+        cfg.dirLogo = ResolverCaminho(cfg.dirLogo, "ACBR_LOGO_DIR");
         cfg.caminhoACBrLib = ResolverCaminho(cfg.caminhoACBrLib, "ACBR_LIB_PATH");
 
         // Detecta se pastaLog/pastaOutput apontam para um arquivo existente (erro de config no GeneXus)
-        if (File.Exists(cfg.pastaLog))    erros.Add($"campo 'pastaLog' aponta para um arquivo, não uma pasta: '{cfg.pastaLog}'.");
+        if (File.Exists(cfg.pastaLog)) erros.Add($"campo 'pastaLog' aponta para um arquivo, não uma pasta: '{cfg.pastaLog}'.");
         if (File.Exists(cfg.pastaOutput)) erros.Add($"campo 'pastaOutput' aponta para um arquivo, não uma pasta: '{cfg.pastaOutput}'.");
 
-        if (string.IsNullOrWhiteSpace(cfg.caminhoACBrLib))         erros.Add("campo 'caminhoACBrLib' obrigatório (preencha na config ou defina a env ACBR_LIB_PATH no container).");
-        else if (!File.Exists(cfg.caminhoACBrLib))               erros.Add($"campo 'caminhoACBrLib': arquivo não encontrado em '{cfg.caminhoACBrLib}'.");
-        if (cfg.codbanco == 0)                                   erros.Add("campo 'codbanco' obrigatório.");
-        if (string.IsNullOrWhiteSpace(cfg.agencia))              erros.Add("campo 'agencia' obrigatório.");
-        if (string.IsNullOrWhiteSpace(cfg.conta))                erros.Add("campo 'conta' obrigatório.");
-        if (string.IsNullOrWhiteSpace(cfg.carteira))             erros.Add("campo 'carteira' obrigatório.");
-        if (string.IsNullOrWhiteSpace(cfg.ws_clientid))          erros.Add("campo 'ws_clientid' obrigatório.");
-        if (string.IsNullOrWhiteSpace(cfg.ws_clientsecret))      erros.Add("campo 'ws_clientsecret' obrigatório.");
-        if (cfg.ws_ambiente < 0 || cfg.ws_ambiente > 2)             erros.Add($"campo 'ws_ambiente' inválido ({cfg.ws_ambiente}): use 0=Produção, 1=Homologação, 2=Sandbox.");
-        if (cfg.tipocobranca <= 0)                               erros.Add("campo 'tipocobranca' obrigatório: banco não selecionado (ex: 6=Itaú, 5=Bradesco).");
+        if (string.IsNullOrWhiteSpace(cfg.caminhoACBrLib)) erros.Add("campo 'caminhoACBrLib' obrigatório (preencha na config ou defina a env ACBR_LIB_PATH no container).");
+        else if (!File.Exists(cfg.caminhoACBrLib)) erros.Add($"campo 'caminhoACBrLib': arquivo não encontrado em '{cfg.caminhoACBrLib}'.");
+        if (cfg.codbanco == 0) erros.Add("campo 'codbanco' obrigatório.");
+        if (string.IsNullOrWhiteSpace(cfg.agencia)) erros.Add("campo 'agencia' obrigatório.");
+        if (string.IsNullOrWhiteSpace(cfg.conta)) erros.Add("campo 'conta' obrigatório.");
+        if (string.IsNullOrWhiteSpace(cfg.carteira)) erros.Add("campo 'carteira' obrigatório.");
+        if (string.IsNullOrWhiteSpace(cfg.ws_clientid)) erros.Add("campo 'ws_clientid' obrigatório.");
+        if (string.IsNullOrWhiteSpace(cfg.ws_clientsecret)) erros.Add("campo 'ws_clientsecret' obrigatório.");
+        if (cfg.ws_ambiente < 0 || cfg.ws_ambiente > 2) erros.Add($"campo 'ws_ambiente' inválido ({cfg.ws_ambiente}): use 0=Produção, 1=Homologação, 2=Sandbox.");
+        if (cfg.tipocobranca <= 0) erros.Add("campo 'tipocobranca' obrigatório: banco não selecionado (ex: 6=Itaú, 5=Bradesco).");
         if (cfg.usecertificatehttp == 1)
         {
-            if (string.IsNullOrWhiteSpace(cfg.arquivocrt))       erros.Add("campo 'arquivocrt' obrigatório quando usecertificatehttp=1.");
-            else if (!File.Exists(cfg.arquivocrt))               erros.Add($"campo 'arquivocrt': arquivo não encontrado em '{cfg.arquivocrt}'.");
-            if (string.IsNullOrWhiteSpace(cfg.arquivokey))       erros.Add("campo 'arquivokey' obrigatório quando usecertificatehttp=1.");
-            else if (!File.Exists(cfg.arquivokey))               erros.Add($"campo 'arquivokey': arquivo não encontrado em '{cfg.arquivokey}'.");
+            if (string.IsNullOrWhiteSpace(cfg.arquivocrt)) erros.Add("campo 'arquivocrt' obrigatório quando usecertificatehttp=1.");
+            else if (!File.Exists(cfg.arquivocrt)) erros.Add($"campo 'arquivocrt': arquivo não encontrado em '{cfg.arquivocrt}'.");
+            if (string.IsNullOrWhiteSpace(cfg.arquivokey)) erros.Add("campo 'arquivokey' obrigatório quando usecertificatehttp=1.");
+            else if (!File.Exists(cfg.arquivokey)) erros.Add($"campo 'arquivokey': arquivo não encontrado em '{cfg.arquivokey}'.");
         }
 
         if (erros.Count > 0)
@@ -473,7 +473,7 @@ public sealed class PoolManager : IDisposable
     private void EvictIdleHandles(object? _)
     {
         if (_disposed) return;
-        var cutoff  = DateTime.UtcNow.AddMinutes(-IdleEvictAfterMinutes);
+        var cutoff = DateTime.UtcNow.AddMinutes(-IdleEvictAfterMinutes);
         var remover = new List<AcbrLibHandle>();
         lock (_lock)
         {
