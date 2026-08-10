@@ -194,7 +194,7 @@ For each configboleto
     &cfgObj.usecertificatehttp = configboleto.usecertificatehttp
     &cfgObj.arquivocrt      = configboleto.arquivocrt
     &cfgObj.arquivokey      = configboleto.arquivokey
-    &cfgObj.tamanhoPool     = 2                               // ajustar conforme carga
+    &cfgObj.poolWaitTimeoutSec = 30                           // espera máx. por um handle livre
     &cfgObj.nivelLog        = 1                               // 1=Erros, 3=Info, 4=Debug
     &cfgObj.pastaLog        = "C:\Logs\ACBrBoleto"
     &cfgObj.pastaOutput     = "C:\Output\ACBrBoleto"
