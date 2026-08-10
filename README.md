@@ -374,24 +374,43 @@ Carteira                 : Numeric(5)
 
 ## Pool de instâncias — como funciona
 
-A DLL mantém um pool de instâncias da ACBrLibBoleto em memória, uma por
-`configboleto.id`. Isso significa:
+Um handle da ACBrLib carrega estado mutável (cedente, banco, token OAuth, lista de
+títulos) e não é thread-safe. Como o mesmo processo emite boletos para centenas de
+empresas, o pool existe para que duas empresas nunca compartilhem um handle.
 
-- **Primeira chamada** para um `configId` → cria o pool (demora ~1-2s)
-- **Chamadas seguintes** → reutiliza instância já configurada (< 5ms overhead)
-- **Mudança de credenciais** → automática: o pool detecta a mudança do hash de
-  `configJson` (`ConfigBoleto.ComputarHash()`) e descarta o pool antigo em background.
-  Basta enviar o config atualizado na próxima chamada — não há método manual de invalidação.
-- **Multi-empresa** → cada `configboleto.id` tem seu próprio pool isolado
-- **Concorrência** → `tamanhoPool` instâncias paralelas por config (padrão: 2)
+O pool é global e dimensionado por concorrência, não por empresa. `ACBR_POOL_MAX`
+(default 16) limita quantos handles existem ao mesmo tempo, somando todas as
+configurações. Assim o custo acompanha as emissões simultâneas e não o cadastro: 300
+empresas com 4 emissões concorrentes custam 4 handles, não 300.
 
-### Recomendações de tamanhoPool
+Cada handle guarda o hash das credenciais que o inicializaram e só é reusado quando o
+hash bate. Um handle nunca é reconfigurado de uma empresa para outra — não existe caminho
+de código em que o cedente da empresa A alcance uma emissão da empresa B. Como efeito
+colateral útil, rotacionar o secret muda o hash e força um handle novo sozinho, sem
+invalidação manual (`Invalidar(configId)` existe para o caso explícito).
 
-| Carga | tamanhoPool |
-|-------|-------------|
-| Baixa (< 10 boletos/min) | 1 |
-| Média (10-100 boletos/min) | 2–3 |
-| Alta (> 100 boletos/min) | 4–6 |
+Quando uma empresa sem handle quente precisa de um e o teto já foi atingido, o pool
+descarta o handle ocioso menos usado e cria um limpo. Reconfigurar o ocioso seria mais
+barato, mas é exatamente o vazamento que o desenho quer tornar impossível. Handles
+parados por mais de 10 minutos também são descartados, para que um pico não deixe memória
+nativa presa.
+
+Na devolução, um handle é descartado em vez de voltar ao conjunto ocioso em três casos:
+quando uma operação nativa falhou (a DLL Delphi pode ficar corrompida e reusar dispara
+access violation), depois de gerar relatório/PDF (o motor Fortes acumula estado e a
+segunda geração sai comprimida, e não há API de reset), e quando a limpeza da lista de
+títulos falha. Nos três, o permit do semáforo é liberado junto — se vazasse, o pool
+travaria depois de algumas falhas.
+
+Ajuste `ACBR_POOL_MAX` pela concorrência de pico, não pelo número de empresas: 4 para
+carga baixa, 8 a 16 para média, 24 a 32 para alta. O teto é por processo, então N
+réplicas significam N × `ACBR_POOL_MAX` handles contra o banco. Se `PoolTimeoutException`
+aparecer nos logs, o teto está abaixo da concorrência real.
+
+Limitações conhecidas: muitas empresas alternando acima do teto causam recriação
+contínua de handles (a saída hoje é subir `ACBR_POOL_MAX`); o LRU é aproximado, porque
+`LastUsed` só é gravado na devolução; e descartar o handle após gerar PDF custa latência
+em cargas com muito relatório — é contorno de um defeito da lib, não escolha de desenho.
 
 ---
 
@@ -430,5 +449,16 @@ ou `4` (Debug) no campo do configJson.
 
 ```bash
 # Não requer ACBrLibBoleto.dll nem PostgreSQL
-dotnet test tests/ACBrBoleto.Tests/
+dotnet test ACBrBoleto.sln
 ```
+
+A suíte roda inteira sem a ACBrLibBoleto64, incluindo a política de concorrência do pool
+(lease exclusivo, isolamento entre empresas, teto e LRU, timeout, descarte de handle
+inutilizável). A DLL nativa não é redistribuível e não existe no runner de CI, então
+`PoolManager.FabricaHandle` — um seam interno, nulo em produção — troca a criação do
+handle nativo por um handle sem DLL. Os testes cobrem a política do pool; o interop em si
+precisa da DLL real e é verificado à parte.
+
+O mesmo comando roda em cada pull request e em cada push para `main`
+([workflow](.github/workflows/ci.yml)), e os resultados ficam publicados como artefato da
+execução.

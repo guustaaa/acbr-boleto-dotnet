@@ -73,9 +73,15 @@ public sealed class PoolManager : IDisposable
     private bool _disposed;
 
     public PoolManager(ILogger<PoolManager> logger)
+        : this(logger, LerMaxHandles(logger)) { }
+
+    // Teto explícito — usado pelos testes de concorrência, que precisam de um cap pequeno
+    // e determinístico. Ler ACBR_POOL_MAX do ambiente não serve: xUnit roda coleções em
+    // paralelo no mesmo processo e mexer em variável de ambiente vazaria entre testes.
+    internal PoolManager(ILogger<PoolManager> logger, int maxHandles)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        _maxHandles = LerMaxHandles(logger);
+        _maxHandles = maxHandles >= 1 ? Math.Min(maxHandles, MaxAllowed) : DefaultMaxHandles;
         _sem = new SemaphoreSlim(_maxHandles, _maxHandles);
         _evictTimer = new Timer(EvictIdleHandles, null,
             TimeSpan.FromMinutes(5), TimeSpan.FromMinutes(5));
@@ -140,7 +146,7 @@ public sealed class PoolManager : IDisposable
         {
             try
             {
-                handle = CriarInstancia(cfg, hash);
+                handle = (FabricaHandle ?? CriarInstancia)(cfg, hash);
             }
             catch
             {
@@ -274,6 +280,13 @@ public sealed class PoolManager : IDisposable
     }
 
     // ── Criação de instância ────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Seam de teste: substitui a criação do handle nativo. Nulo em produção, onde o
+    /// caminho é sempre <see cref="CriarInstancia"/>. Permite exercitar lease exclusivo,
+    /// afinidade por hash, teto/LRU e descarte de handle faulted sem a ACBrLibBoleto64.
+    /// </summary>
+    internal Func<ConfigBoleto, string, AcbrLibHandle>? FabricaHandle { get; set; }
 
     private static readonly object _logLock = new();
 
@@ -468,6 +481,12 @@ public sealed class PoolManager : IDisposable
     internal int ActivePoolCount
     {
         get { lock (_lock) { return _totalCount; } }
+    }
+
+    // Exposto internamente para testes: handles ociosos prontos para reuso.
+    internal int IdleCount
+    {
+        get { lock (_lock) { return _idle.Count; } }
     }
 
     private void EvictIdleHandles(object? _)

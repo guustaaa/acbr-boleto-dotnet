@@ -221,6 +221,38 @@ internal sealed class AcbrLibHandle : IDisposable
         BindDelegates();
     }
 
+    // ── Seam de teste ─────────────────────────────────────────────────
+    //
+    // Handle sem biblioteca nativa, para os testes de concorrência do pool
+    // (InternalsVisibleTo=ACBrBoleto.Tests). Nunca é criado em produção: o único caminho
+    // de produção é PoolManager.CriarInstancia, que usa o construtor público acima.
+    // Existe porque exercitar a política do pool exigia a ACBrLibBoleto64, que não é
+    // redistribuível e não existe em CI.
+    //
+    // Descarta com segurança sem tocar código nativo: Finalizar() retorna cedo com
+    // _inicializado=false, e Dispose() só libera _hLib quando != Zero.
+
+    private readonly bool _semNativo;
+
+    /// <summary>Testes: força a próxima limpeza a falhar, simulando handle sujo na devolução.</summary>
+    internal bool FalharAoLimpar { get; set; }
+
+    /// <summary>Testes: expõe se o handle já foi descartado.</summary>
+    internal bool Disposed => _disposed;
+
+    internal AcbrLibHandle(bool semNativo)
+    {
+        if (!semNativo)
+            throw new ArgumentException("Use o construtor com dllPath para handles reais.", nameof(semNativo));
+        _semNativo = true;
+    }
+
+    /// <summary>Testes: simula uma operação nativa com estado que falhou.</summary>
+    internal void MarcarFaulted() => Faulted = true;
+
+    /// <summary>Testes: simula a geração de um relatório/PDF neste handle.</summary>
+    internal void MarcarRelatorioGerado() => RelatorioGerado = true;
+
     // ── Ciclo de vida ─────────────────────────────────────────────────
 
     public void Inicializar(string iniPath)
@@ -319,8 +351,18 @@ internal sealed class AcbrLibHandle : IDisposable
         finally { try { File.Delete(tmp); } catch { } }
     });
 
-    public void LimparLista() =>
-        Stateful(() => Check(_limparLista(_libHandle), "Boleto_LimparLista"));
+    public void LimparLista() => Stateful(() =>
+    {
+        if (_semNativo)
+        {
+            // Handle de teste: sem lista nativa para limpar. FalharAoLimpar deixa o teste
+            // exercitar o caminho "limpeza falhou → Stateful marca faulted → pool descarta".
+            if (FalharAoLimpar)
+                throw new InvalidOperationException("Falha de limpeza simulada (teste).");
+            return;
+        }
+        Check(_limparLista(_libHandle), "Boleto_LimparLista");
+    });
 
     /// <summary>Retorna o número de títulos na lista atual (retorno = contagem).</summary>
     public int TotalTitulosLista() => _totalTitulosLista(_libHandle);

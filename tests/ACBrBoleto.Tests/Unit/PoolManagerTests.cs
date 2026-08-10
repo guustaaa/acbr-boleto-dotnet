@@ -145,18 +145,10 @@ public class PoolManagerTests : IDisposable
         await act.Should().ThrowAsync<ObjectDisposedException>();
     }
 
-    // ── Cancellation ──────────────────────────────────────────────────────────
-
-    [Fact(Skip = "Requer DLL válida para rodar")]
-    public async Task AlugarAsync_ComTokenCancelado_LancaOperationCanceled()
-    {
-        var cfg = ConfigBase();
-        using var cts = new CancellationTokenSource();
-        cts.Cancel();
-
-        var act = async () => await _pool.AlugarAsync(cfg, cts.Token);
-        await act.Should().ThrowAsync<OperationCanceledException>();
-    }
+    // Cancelamento durante a espera pelo pool é coberto de forma determinística em
+    // PoolManagerConcurrencyTests.TokenCancelado_AbortaAEsperaSemVazarPermit, que também
+    // verifica que o permit não vaza. O teste que ficava aqui era [Skip]: exigia a DLL
+    // nativa e nunca rodou nem local nem em CI.
 
     // ── Helpers ───────────────────────────────────────────────────────────────
 
