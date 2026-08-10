@@ -12,12 +12,15 @@ public class PdfGenerationTests
     [Fact]
     public void StxSerializer_GeraIniComConfiguracaoFortes()
     {
+        // Pasta montada com as primitivas da plataforma: a lib roda em Windows e Linux,
+        // e o INI sai com o separador e o caminho absoluto do host.
+        var pastaOut = Path.Combine(Path.GetTempPath(), "acbr_out_test");
         var cfg = new ConfigBoleto
         {
             id = 1,
             codbanco = 341,
             tipocobranca = 6,
-            pastaOutput = @"C:\TEMP\OUTPUT",
+            pastaOutput = pastaOut,
             VersaoDF = "V2"
         };
         var uni = new Unidade { nome = "Empresa Teste", cpfcnpj = "00000000000000" };
@@ -28,7 +31,7 @@ public class PdfGenerationTests
         ini.Should().Contain("[BoletoBancoFCFortesConfig]");
         ini.Should().Contain("Filtro=1");
         // Sem fileName explícito, gera nome único: boleto_{id}_{guid}.pdf
-        ini.Should().Contain(@"NomeArquivo=C:\TEMP\OUTPUT\boleto_1_");
+        ini.Should().Contain($"NomeArquivo={Path.Combine(Path.GetFullPath(pastaOut), "boleto_1_")}");
         ini.Should().Contain(".pdf");
     }
 
@@ -50,7 +53,8 @@ public class PdfGenerationTests
 
         var ini = StxSerializer.GerarTituloIni(t, cli, cfg);
 
-        // Deve conter a chave mas com valor vazio, não 0000-00-00
-        ini.Should().Contain("DataProcessamento=\r\n");
+        // Deve conter a chave mas com valor vazio, não 0000-00-00.
+        // O INI é montado com AppendLine, então a quebra é a do host.
+        ini.Should().Contain($"DataProcessamento={Environment.NewLine}");
     }
 }
