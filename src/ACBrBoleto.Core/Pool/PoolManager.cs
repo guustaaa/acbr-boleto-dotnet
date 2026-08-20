@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using System.Text.RegularExpressions;
 using ACBrBoleto.Core.Exceptions;
 using ACBrBoleto.Core.Interop;
 using ACBrBoleto.Core.Models;
@@ -306,7 +307,7 @@ public sealed class PoolManager : IDisposable
 
         _logger.LogInformation("[PoolManager] config {Id}#{N} criando handle. DiagLog='{Path}'", cfg.id, slot, diagPath);
 
-        AcbrLog(diagPath, $"=== INICIALIZAR === iniPath={iniPath}\r\n{iniConteudo}");
+        AcbrLog(diagPath, $"=== INICIALIZAR === iniPath={iniPath}\r\n{RedactSensitiveIni(iniConteudo)}");
 
         var handle = new AcbrLibHandle(cfg.caminhoACBrLib)
         {
@@ -325,7 +326,7 @@ public sealed class PoolManager : IDisposable
         TentarGravarValor(handle, diagPath, "Principal", "LogNivel", cfg.nivelLog.ToString());
         TentarGravarValor(handle, diagPath, "Principal", "LogPath", logFile);
 
-        AcbrLog(diagPath, $"=== CONFIGURAR_DADOS === cedentePath={cedentePath}\r\n{cedenteConteudo}");
+        AcbrLog(diagPath, $"=== CONFIGURAR_DADOS === cedentePath={cedentePath}\r\n{RedactSensitiveIni(cedenteConteudo)}");
 
         try
         {
@@ -348,7 +349,7 @@ public sealed class PoolManager : IDisposable
         }
 
         var configExp = TentarLerValor(() => handle.ConfigExportar(), "ConfigExportar");
-        AcbrLog(diagPath, $"ConfigExportar (pós-ConfigurarDados):\r\n{configExp}");
+        AcbrLog(diagPath, $"ConfigExportar (pós-ConfigurarDados):\r\n{RedactSensitiveIni(configExp)}");
 
         return handle;
     }
@@ -413,6 +414,11 @@ public sealed class PoolManager : IDisposable
             _logger.LogWarning("[Diag] Falha ao gravar '{Path}': {Err}", diagPath, ex.Message);
         }
     }
+
+    internal static string RedactSensitiveIni(string value) => Regex.Replace(
+        value,
+        @"(?im)^(\s*(?:ClientID|ClientSecret|Chave|ArquivoCRT|ArquivoKEY)\s*=).*$",
+        "$1[REDACTED]");
 
     // ── Validação de config ─────────────────────────────────────────────────────
 
